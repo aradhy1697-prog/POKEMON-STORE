@@ -1,45 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Pokémon Store India</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { font-family: Arial, sans-serif; background: #f5f7fb; margin: 0; padding-bottom: 50px; }
-        header { background: linear-gradient(90deg, #ffcb05, #ff3c3c); color: black; text-align: center; padding: 20px; font-size: 26px; font-weight: bold; }
-        nav { display: flex; justify-content: center; gap: 10px; background: white; padding: 10px; position: sticky; top: 0; z-index: 100; }
-        nav button { border: none; padding: 8px 12px; border-radius: 20px; background: #ffcb05; cursor: pointer; font-weight: bold; }
-        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-        .product { background: white; border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .product img { width: 100%; height: 200px; object-fit: contain; border-radius: 10px; }
-        .thumbs { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
-        .thumbs img { width: 40px; height: 40px; cursor: pointer; border: 1px solid #ddd; border-radius: 5px; }
-        button.buy { margin-top: 10px; width: 100%; padding: 12px; background: #ff3c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .cart { background: white; margin: 20px; padding: 20px; border-radius: 12px; border: 2px solid #ffcb05; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokeIndia TCG Store</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; color: #333; }
+  header { text-align: center; padding: 30px; background: #ffcb05; color: #3c5aa6; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .filters { text-align: center; margin-bottom: 30px; }
+  .filters button { padding: 10px 20px; margin: 5px; cursor: pointer; border: none; background: #3c5aa6; color: white; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+  .filters button:hover { background: #2a3f78; transform: translateY(-2px); }
+  
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .product { background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+  .product:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .product img { width: 100%; border-radius: 10px; cursor: pointer; margin-bottom: 10px; }
+  
+  .buy { background: #e67e22; color: white; border: none; padding: 10px 15px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+  .buy:hover { background: #d35400; }
+
+  /* Cart Section */
+  #cart { background: white; padding: 20px; border-radius: 15px; margin-top: 40px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+  .checkout-btn { background: #25d366; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1rem; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; }
+
+  /* Modal (Popup) Styles */
+  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); overflow-y: auto; }
+  .modal-content { background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 20px; width: 90%; max-width: 850px; position: relative; }
+  .close { color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; }
+  .close:hover { color: #000; }
+
+  /* Zoom Container */
+  .zoom-container { position: relative; width: 350px; height: 500px; overflow: hidden; border-radius: 12px; cursor: zoom-in; background: #fff; border: 1px solid #eee; margin: 0 auto; }
+  #zoom-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s ease-out; }
+
+  @media (max-width: 600px) {
+    .modal-content { margin: 10% auto; padding: 15px; }
+    .zoom-container { width: 100%; height: 400px; }
+  }
+</style>
 </head>
 <body>
 
-<header>🔥 Pokémon Store India</header>
+<header>
+  <h1>PokeIndia TCG Store</h1>
+  <p>Premium Pokémon Cards & Sealed Product</p>
+</header>
 
-<nav>
-    <button onclick="filterProducts('all')">All</button>
-    <button onclick="filterProducts('booster')">Booster Boxes</button>
-    <button onclick="filterProducts('packs')">Loose Packs</button>
-    <button onclick="filterProducts('cards')">Cards</button>
-    <button onclick="filterProducts('accessories')">Accessories</button>
-</nav>
+<div class="filters">
+  <button onclick="filterProducts('all')">All Products</button>
+  <button onclick="filterProducts('booster')">Booster Boxes</button>
+  <button onclick="filterProducts('packs')">Loose Packs</button>
+  <button onclick="filterProducts('cards')">Single Cards</button>
+</div>
 
-<div class="products" id="productList"></div>
+<div id="productList" class="products-grid"></div>
 
-<div class="cart">
-    <h3>🛒 Your Cart</h3>
-    <div id="cartItems">Your cart is empty</div>
-    <hr>
-    <button onclick="checkout()" class="buy">Checkout on WhatsApp</button>
+<div id="cart">
+  <h3>🛒 Your Shopping Cart</h3>
+  <div id="cartItems">Your cart is empty</div>
+  <button class="checkout-btn" onclick="checkout()">Checkout on WhatsApp</button>
+</div>
+
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modalBody" style="display:flex; gap:30px; align-items:center; flex-wrap: wrap;">
+      </div>
+  </div>
 </div>
 
 <script>
 let products = [
+  { name: "Pokemon Basic Fire Energy 010 - Cracked Ice Holo (S&V)", price: 500, category: "cards", condition: "NM", images: ["images/fire.jpg"], maxQty: 1 },
   { name: "Paradise Dragona Booster Box (Korean) – S12a SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
   { name: "Pokémon TCG: White Flare Booster Box (Korean) – S11a SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
   { name: "Korean Lost Abyss Booster Box (S11) SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
@@ -66,13 +98,13 @@ function loadProducts(list = products) {
     let realIndex = products.indexOf(p);
     html += `
     <div class="product">
-      <img src="${p.images[0]}" style="width:100%; border-radius:10px;">
+      <img src="${p.images[0]}" onclick="openProduct(${realIndex})" title="Click to inspect">
       <h4>${p.name}</h4>
       <p style="font-weight:bold; color:#e67e22;">₹${p.price} ${isStackable ? 'per pack' : ''}</p>
       ${isStackable ? `
         <div style="margin: 10px 0;">
-          <label style="font-size:12px;">Qty (Max: ${p.maxQty}):</label><br>
-          <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:80%; padding:8px; border:2px solid #ffcb05; border-radius:5px;">
+          <label style="font-size:11px;">Qty (Max ${p.maxQty}):</label><br>
+          <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:60%; padding:5px; border:1px solid #ccc; border-radius:4px;">
         </div>` : `<input type="hidden" id="qty-${realIndex}" value="1">`}
       <button class="buy" onclick="addToCart(${realIndex})">Add to Cart</button>
     </div>`;
@@ -82,19 +114,59 @@ function loadProducts(list = products) {
 
 function filterProducts(cat) { loadProducts(cat === "all" ? products : products.filter(p => p.category === cat)); }
 
+function openProduct(index) {
+    const p = products[index];
+    const modal = document.getElementById("productModal");
+    const content = document.getElementById("modalBody");
+    
+    let conditionHTML = p.condition === "NM" ? 
+        `<div style="background: linear-gradient(45deg, #00b894, #009432); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 900; font-size: 1rem; display: inline-block; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);">✨ NEAR MINT (NM)</div>` : '';
+
+    content.innerHTML = `
+        <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom(event)">
+            <img src="${p.images[0]}" id="zoom-img">
+        </div>
+        <div style="flex:1; min-width:280px;">
+            ${conditionHTML}
+            <h2 style="margin-top:0; color:#2c3e50;">${p.name}</h2>
+            <p style="font-size: 2rem; color: #e67e22; font-weight: bold; margin: 10px 0;">₹${p.price}</p>
+            <p style="color: #666; font-size: 0.95rem;">Hover over the image to inspect corners, surface, and holographic details. Every card is 100% authentic.</p>
+            <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
+            <button class="buy" style="padding:15px; font-size:1.1rem;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
+        </div>
+    `;
+    modal.style.display = "block";
+}
+
+function zoom(e) {
+    const img = document.getElementById("zoom-img");
+    const container = e.currentTarget;
+    const x = (e.offsetX / container.offsetWidth) * 100;
+    const y = (e.offsetY / container.offsetHeight) * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = "scale(2.5)";
+}
+
+function resetZoom() { document.getElementById("zoom-img").style.transform = "scale(1)"; }
+
+function closeModal() { document.getElementById("productModal").style.display = "none"; }
+
+window.onclick = function(event) { if (event.target == document.getElementById("productModal")) closeModal(); }
+
 function addToCart(index) {
   const qtyInput = document.getElementById(`qty-${index}`);
-  let q = parseInt(qtyInput.value) || 1;
+  let q = parseInt(qtyInput.value) || 0;
   const max = products[index].maxQty;
 
-  // Security Check: If they typed a number higher than your stock
   if (q > max) {
-    alert(`Sorry! We only have ${max} of this item in stock. Setting quantity to ${max}.`);
-    q = max;
-    qtyInput.value = max; // This physically changes the number in the box back to the limit
+    alert(`⚠️ Limit reached! We only have ${max} in stock.`);
+    qtyInput.value = max;
+    return;
   }
-  
-  if (q < 1) q = 1; // Prevents negative numbers or zero
+  if (q <= 0) {
+    alert("Please enter a quantity of 1 or more.");
+    return;
+  }
 
   cart.push({ ...products[index], qty: q });
   renderCart();
@@ -124,4 +196,5 @@ function checkout() {
 
 loadProducts();
 </script>
-
+</body>
+</html>
