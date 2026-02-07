@@ -71,6 +71,9 @@ let cart = [];
 function loadProducts(list = products) {
   let html = "";
   list.forEach((p, i) => {
+    // Check if we should show the Quantity Box
+    let showQty = (p.category === 'packs' || p.category === 'accessories');
+    
     html += `
     <div class="product">
       <img src="${p.images[0]}" id="img-${i}" style="width:100%; border-radius:10px;">
@@ -80,8 +83,14 @@ function loadProducts(list = products) {
         `).join("")}
       </div>
       <h4>${p.name}</h4>
-      <p>₹${p.price}</p>
-      <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
+      <p>₹${p.price} ${showQty ? 'per pack' : ''}</p>
+      
+      <div style="margin-bottom:10px; display: ${showQty ? 'block' : 'none'};">
+        <label>Qty:</label>
+        <input type="number" id="qty-${i}" value="1" min="1" style="width:50px; padding:5px; border-radius:5px; border:1px solid #ccc;">
+      </div>
+
+      <button class="buy" onclick="addToCart(${i}, ${showQty})">Add to Cart</button>
     </div>`;
   });
   document.getElementById("productList").innerHTML = html;
@@ -92,8 +101,15 @@ function filterProducts(category) {
   else loadProducts(products.filter(p => p.category === category));
 }
 
-function addToCart(index) {
-  cart.push(products[index]);
+function addToCart(index, hasQtyInput) {
+  let quantity = 1;
+  if (hasQtyInput) {
+    quantity = parseInt(document.getElementById(`qty-${index}`).value);
+  }
+  
+  if (quantity < 1) return alert("Please enter a valid quantity");
+  
+  cart.push({ ...products[index], qty: quantity });
   renderCart();
 }
 
@@ -103,25 +119,29 @@ function renderCart() {
   if(cart.length === 0) {
       html = "Your cart is empty";
   } else {
-      cart.forEach(p => {
-        html += `<p>✅ ${p.name} - ₹${p.price}</p>`;
-        total += p.price;
+      cart.forEach(item => {
+        let itemTotal = item.price * item.qty;
+        html += `<p>✅ ${item.name} (x${item.qty}) - ₹${itemTotal}</p>`;
+        total += itemTotal;
       });
-      html += `<strong>Total: ₹${total}</strong>`;
+      html += `<strong>Total Order: ₹${total}</strong>`;
   }
   document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
   if(cart.length === 0) return alert("Cart is empty!");
-  let text = "Hi! I want to order:\n";
-  cart.forEach(p => text += "- " + p.name + " (₹" + p.price + ")\n");
-  let total = cart.reduce((sum, p) => sum + p.price, 0);
+  let text = "Hi! I want to order from PokeIndia:\n";
+  let total = 0;
+  cart.forEach(item => {
+    let itemTotal = item.price * item.qty;
+    text += `- ${item.name} | Qty: ${item.qty} | Price: ₹${itemTotal}\n`;
+    total += itemTotal;
+  });
   text += "\nTotal: ₹" + total + "\nPlease send GPay info!";
   window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
-// This line makes the products appear when the page opens
 loadProducts();
 </script>
 
