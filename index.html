@@ -60,58 +60,58 @@ let products = [
 let cart = [];
 
 function loadProducts(list = products) {
-    let html = "";
-    list.forEach((p, i) => {
-        html += `
-        <div class="product">
-            <img src="${p.images[0]}" id="img-${i}">
-            <div class="thumbs">
-                ${p.images.map(img => `<img src="${img}" onclick="document.getElementById('img-${i}').src='${img}'">`).join("")}
-            </div>
-            <h4>${p.name}</h4>
-            <p><strong>₹${p.price}</strong></p>
-            <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
-        </div>`;
-    });
-    document.getElementById("productList").innerHTML = html;
+  let html = "";
+  list.forEach((p, i) => {
+    html += `
+    <div class="product">
+      <img src="${p.images[0]}" id="img-${i}" style="width:100%; border-radius:10px;">
+      <div style="display:flex; justify-content:center; gap:5px; margin-top:5px;">
+        ${p.images.map(img => `
+          <img src="${img}" style="width:40px; height:40px; cursor:pointer; border:1px solid #ddd; object-fit:cover;" onclick="document.getElementById('img-${i}').src='${img}'">
+        `).join("")}
+      </div>
+      <h4>${p.name}</h4>
+      <p>₹${p.price}</p>
+      <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
+    </div>`;
+  });
+  document.getElementById("productList").innerHTML = html;
 }
 
 function filterProducts(category) {
-    if(category === 'all') loadProducts(products);
-    else loadProducts(products.filter(p => p.category === category));
+  if(category === "all") loadProducts(products);
+  else loadProducts(products.filter(p => p.category === category));
 }
 
 function addToCart(index) {
-    cart.push(products[index]);
-    renderCart();
+  cart.push(products[index]);
+  renderCart();
 }
 
 function renderCart() {
-    if (cart.length === 0) {
-        document.getElementById("cartItems").innerHTML = "Your cart is empty";
-        return;
-    }
-    let html = "";
-    let total = 0;
-    cart.forEach(p => {
-        html += `<p>• ${p.name} - ₹${p.price}</p>`;
+  let html = "";
+  let total = 0;
+  if(cart.length === 0) {
+      html = "Your cart is empty";
+  } else {
+      cart.forEach(p => {
+        html += `<p>✅ ${p.name} - ₹${p.price}</p>`;
         total += p.price;
-    });
-    html += `<p><strong>Total: ₹${total}</strong></p>`;
-    document.getElementById("cartItems").innerHTML = html;
+      });
+      html += `<strong>Total: ₹${total}</strong>`;
+  }
+  document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
-    if(cart.length === 0) return alert("Add items first!");
-    let text = "Hi! I want to order from your Pokémon Store:\n\n";
-    cart.forEach(p => text += "- " + p.name + " (₹" + p.price + ")\n");
-    let total = cart.reduce((sum, item) => sum + item.price, 0);
-    text += "\nTotal: ₹" + total + "\n\nPlease share GPay details!";
-    window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
+  if(cart.length === 0) return alert("Cart is empty!");
+  let text = "Hi! I want to order:\n";
+  cart.forEach(p => text += "- " + p.name + " (₹" + p.price + ")\n");
+  let total = cart.reduce((sum, p) => sum + p.price, 0);
+  text += "\nTotal: ₹" + total + "\nPlease send GPay info!";
+  window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
+// This line makes the products appear when the page opens
 loadProducts();
 </script>
-
-</body>
-</html>
