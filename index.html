@@ -127,7 +127,7 @@ function loadProducts(list = products) {
   list.forEach((p, i) => {
     html += `
     <div class="product">
-      <img src="https://i.imgur.com/8Qf5bE6.png">
+      <img src="${p.images[0]}">
       <h4>${p.name}</h4>
       <p>₹${p.price}</p>
       <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
@@ -165,4 +165,5 @@ loadProducts();
 
 </body>
 </html>
+
 
