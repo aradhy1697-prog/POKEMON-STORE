@@ -40,30 +40,21 @@
 
 <script>
 let products = [
-  {
-    name: "Paradise Dragona Booster Box (Korean) – S12a SEALED",
-    price: 6000,
-    category: "booster",
-    images: ["images/paradise1.jpg", "images/paradise2.jpg", "images/paradise3.jpg"]
-  },
-  {
-    name: "Pokémon TCG: White Flare Booster Box (Korean) – S11a SEALED",
-    price: 6500,
-    category: "booster",
-    images: ["images/whiteflare1.jpg", "images/whiteflare2.jpg", "images/whiteflare3.jpg"]
-  },
-  {
-    name: "Korean Lost Abyss Booster Box (S11) SEALED",
-    price: 7500,
-    category: "booster",
-    images: ["images/lostabyss1.jpg", "images/lostabyss2.jpg", "images/lostabyss3.jpg"]
-  },
-  {
-    name: "Mask of Change Booster Pack – Korean (SV6)",
-    price: 300,
-    category: "packs",
-    images: ["images/mask1.jpg"]
-  }
+  { name: "Paradise Dragona Booster Box (Korean) – S12a SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
+  { name: "Pokémon TCG: White Flare Booster Box (Korean) – S11a SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
+  { name: "Korean Lost Abyss Booster Box (S11) SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
+  { name: "Glory of Team Rocket Booster Pack (Korean) – SV10", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
+  { name: "Incandescent Arcana Booster Pack – Japanese (S11a)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
+  { name: "Mega Brave Booster Pack – Japanese (M1L)", price: 330, category: "packs", images: ["images/megabrave.jpg"], maxQty: 3 },
+  { name: "Pokemon Sword Booster Pack - Japanese (S1W)", price: 1500, category: "packs", images: ["images/swordv.jpg"], maxQty: 3 },
+  { name: "Crimson Haze Booster Pack – Japanese (SV5a)", price: 270, category: "packs", images: ["images/crimson.jpg"], maxQty: 1 },
+  { name: "Evolving Skies Booster Pack – English (Sword & Shield)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 1 },
+  { name: "2021 McDonald’s 25th Anniversary Pokémon Pack (English Promo)", price: 1200, category: "packs", images: ["images/mcdonald.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 8 – Japanese (Scarlet & Violet)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 7 – Japanese (Scarlet & Violet)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 1 },
+  { name: "Super Electric Breaker Booster Pack – Japanese (SV8)", price: 450, category: "packs", images: ["images/electricbreaker.jpg"], maxQty: 1 },
+  { name: "Ruler of the Black Flame - Korean (SV3)", price: 230, category: "packs", images: ["images/robf.jpg"], maxQty: 1 },
+  { name: "Mask of Change Booster Pack – Korean (SV6)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 }
 ];
 
 let cart = [];
@@ -71,78 +62,51 @@ let cart = [];
 function loadProducts(list = products) {
   let html = "";
   list.forEach((p, i) => {
-    // Show quantity box ONLY for packs and accessories
     let isStackable = (p.category === 'packs' || p.category === 'accessories');
-    
+    let realIndex = products.indexOf(p);
     html += `
     <div class="product">
-      <img src="${p.images[0]}" id="img-${i}" style="width:100%; border-radius:10px;">
-      <div style="display:flex; justify-content:center; gap:5px; margin-top:5px;">
-        ${p.images.map(img => `
-          <img src="${img}" style="width:40px; height:40px; cursor:pointer; border:1px solid #ddd; object-fit:cover;" onclick="document.getElementById('img-${i}').src='${img}'">
-        `).join("")}
-      </div>
+      <img src="${p.images[0]}" style="width:100%; border-radius:10px;">
       <h4>${p.name}</h4>
       <p style="font-weight:bold; color:#e67e22;">₹${p.price} ${isStackable ? 'per pack' : ''}</p>
-      
       ${isStackable ? `
-        <div style="margin: 10px 0; background: #f9f9f9; padding: 5px; border-radius: 5px;">
-          <label style="font-size:14px;">Select Quantity:</label>
-          <input type="number" id="qty-${i}" value="1" min="1" style="width:60px; padding:8px; border:2px solid #ffcb05; border-radius:5px; font-weight:bold;">
-        </div>
-      ` : `<input type="hidden" id="qty-${i}" value="1">`}
-
-      <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
+        <div style="margin: 10px 0;">
+          <label style="font-size:12px;">Qty (Max: ${p.maxQty}):</label><br>
+          <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:80%; padding:8px; border:2px solid #ffcb05; border-radius:5px;">
+        </div>` : `<input type="hidden" id="qty-${realIndex}" value="1">`}
+      <button class="buy" onclick="addToCart(${realIndex})">Add to Cart</button>
     </div>`;
   });
   document.getElementById("productList").innerHTML = html;
 }
 
-function filterProducts(category) {
-  if(category === "all") loadProducts(products);
-  else loadProducts(products.filter(p => p.category === category));
-}
+function filterProducts(cat) { loadProducts(cat === "all" ? products : products.filter(p => p.category === cat)); }
 
 function addToCart(index) {
-  const qtyInput = document.getElementById(`qty-${index}`);
-  const quantity = parseInt(qtyInput.value) || 1;
-  
-  if (quantity < 1) return alert("Please enter a valid quantity");
-  
-  cart.push({ ...products[index], qty: quantity });
+  let q = parseInt(document.getElementById(`qty-${index}`).value) || 1;
+  cart.push({ ...products[index], qty: q });
   renderCart();
 }
 
+function clearCart() { cart = []; renderCart(); }
+
 function renderCart() {
-  let html = "";
-  let total = 0;
-  if(cart.length === 0) {
-      html = "Your cart is empty";
-  } else {
-      cart.forEach((item, index) => {
-        let itemTotal = item.price * item.qty;
-        html += `
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:5px 0;">
-            <span>✅ ${item.name} (x${item.qty})</span>
-            <span>₹${itemTotal}</span>
-          </div>`;
-        total += itemTotal;
-      });
-      html += `<div style="margin-top:10px; font-size:1.2em;"><strong>Total Order: ₹${total}</strong></div>`;
+  let html = ""; let total = 0;
+  if(cart.length === 0) html = "Your cart is empty";
+  else {
+    cart.forEach(item => {
+      let sub = item.price * item.qty;
+      html += `<p>✅ ${item.name} (x${item.qty}) - ₹${sub}</p>`;
+      total += sub;
+    });
+    html += `<strong>Total: ₹${total}</strong><br><button onclick="clearCart()" style="background:#ccc; color:#000; padding:5px; margin-top:5px; border:none; border-radius:5px; cursor:pointer;">Clear Cart</button>`;
   }
   document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
   if(cart.length === 0) return alert("Cart is empty!");
-  let text = "Hi PokeIndia! I want to order:\n\n";
-  let total = 0;
-  cart.forEach(item => {
-    let itemTotal = item.price * item.qty;
-    text += `📦 ${item.name}\nQty: ${item.qty} | Subtotal: ₹${itemTotal}\n\n`;
-    total += itemTotal;
-  });
-  text += "Total Amount: ₹" + total + "\n\nPlease share GPay details for payment!";
+  let text = "Hi PokeIndia! I want to order:\n\n" + cart.map(i => `- ${i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join("\n") + "\n\nTotal: ₹" + cart.reduce((sum, i) => sum + (i.price * i.qty), 0) + "\n\nPlease send GPay info!";
   window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
