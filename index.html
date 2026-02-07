@@ -71,8 +71,8 @@ let cart = [];
 function loadProducts(list = products) {
   let html = "";
   list.forEach((p, i) => {
-    // Check if we should show the Quantity Box
-    let showQty = (p.category === 'packs' || p.category === 'accessories');
+    // Show quantity box ONLY for packs and accessories
+    let isStackable = (p.category === 'packs' || p.category === 'accessories');
     
     html += `
     <div class="product">
@@ -83,14 +83,16 @@ function loadProducts(list = products) {
         `).join("")}
       </div>
       <h4>${p.name}</h4>
-      <p>₹${p.price} ${showQty ? 'per pack' : ''}</p>
+      <p style="font-weight:bold; color:#e67e22;">₹${p.price} ${isStackable ? 'per pack' : ''}</p>
       
-      <div style="margin-bottom:10px; display: ${showQty ? 'block' : 'none'};">
-        <label>Qty:</label>
-        <input type="number" id="qty-${i}" value="1" min="1" style="width:50px; padding:5px; border-radius:5px; border:1px solid #ccc;">
-      </div>
+      ${isStackable ? `
+        <div style="margin: 10px 0; background: #f9f9f9; padding: 5px; border-radius: 5px;">
+          <label style="font-size:14px;">Select Quantity:</label>
+          <input type="number" id="qty-${i}" value="1" min="1" style="width:60px; padding:8px; border:2px solid #ffcb05; border-radius:5px; font-weight:bold;">
+        </div>
+      ` : `<input type="hidden" id="qty-${i}" value="1">`}
 
-      <button class="buy" onclick="addToCart(${i}, ${showQty})">Add to Cart</button>
+      <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
     </div>`;
   });
   document.getElementById("productList").innerHTML = html;
@@ -101,11 +103,9 @@ function filterProducts(category) {
   else loadProducts(products.filter(p => p.category === category));
 }
 
-function addToCart(index, hasQtyInput) {
-  let quantity = 1;
-  if (hasQtyInput) {
-    quantity = parseInt(document.getElementById(`qty-${index}`).value);
-  }
+function addToCart(index) {
+  const qtyInput = document.getElementById(`qty-${index}`);
+  const quantity = parseInt(qtyInput.value) || 1;
   
   if (quantity < 1) return alert("Please enter a valid quantity");
   
@@ -119,30 +119,32 @@ function renderCart() {
   if(cart.length === 0) {
       html = "Your cart is empty";
   } else {
-      cart.forEach(item => {
+      cart.forEach((item, index) => {
         let itemTotal = item.price * item.qty;
-        html += `<p>✅ ${item.name} (x${item.qty}) - ₹${itemTotal}</p>`;
+        html += `
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:5px 0;">
+            <span>✅ ${item.name} (x${item.qty})</span>
+            <span>₹${itemTotal}</span>
+          </div>`;
         total += itemTotal;
       });
-      html += `<strong>Total Order: ₹${total}</strong>`;
+      html += `<div style="margin-top:10px; font-size:1.2em;"><strong>Total Order: ₹${total}</strong></div>`;
   }
   document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
   if(cart.length === 0) return alert("Cart is empty!");
-  let text = "Hi! I want to order from PokeIndia:\n";
+  let text = "Hi PokeIndia! I want to order:\n\n";
   let total = 0;
   cart.forEach(item => {
     let itemTotal = item.price * item.qty;
-    text += `- ${item.name} | Qty: ${item.qty} | Price: ₹${itemTotal}\n`;
+    text += `📦 ${item.name}\nQty: ${item.qty} | Subtotal: ₹${itemTotal}\n\n`;
     total += itemTotal;
   });
-  text += "\nTotal: ₹" + total + "\nPlease send GPay info!";
+  text += "Total Amount: ₹" + total + "\n\nPlease share GPay details for payment!";
   window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
 loadProducts();
 </script>
-
-
