@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PokeIndia TCG Store</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; color: #333; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; color: #333; overflow-x: hidden; }
   header { text-align: center; padding: 30px; background: #ffcb05; color: #3c5aa6; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   .filters { text-align: center; margin-bottom: 30px; }
   .filters button { padding: 10px 20px; margin: 5px; cursor: pointer; border: none; background: #3c5aa6; color: white; border-radius: 5px; font-weight: bold; transition: 0.3s; }
@@ -24,18 +24,21 @@
   .checkout-btn { background: #25d366; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1rem; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; }
 
   /* Modal (Popup) Styles */
-  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); overflow-y: auto; }
-  .modal-content { background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 20px; width: 90%; max-width: 850px; position: relative; }
-  .close { color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; }
-  .close:hover { color: #000; }
+  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); overflow-y: auto; }
+  .modal-content { background-color: #fff; margin: 2% auto; padding: 30px; border-radius: 20px; width: 95%; max-width: 1100px; position: relative; display: flex; flex-direction: row; gap: 40px; align-items: flex-start; }
+  .close { position: absolute; right: 20px; top: 15px; color: #333; font-size: 35px; font-weight: bold; cursor: pointer; z-index: 10; }
 
-  /* Zoom Container */
-  .zoom-container { position: relative; width: 350px; height: 500px; overflow: hidden; border-radius: 12px; cursor: zoom-in; background: #fff; border: 1px solid #eee; margin: 0 auto; }
-  #zoom-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s ease-out; }
+  /* Zoom Container - BIGGER SIZE */
+  .zoom-container { position: relative; width: 500px; height: 700px; overflow: hidden; border-radius: 15px; cursor: zoom-in; background: #f9f9f9; border: 1px solid #ddd; touch-action: none; flex-shrink: 0; }
+  #zoom-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s ease-out; transform-origin: center; }
 
-  @media (max-width: 600px) {
-    .modal-content { margin: 10% auto; padding: 15px; }
-    .zoom-container { width: 100%; height: 400px; }
+  /* Premium NM Badge */
+  .nm-badge { background: linear-gradient(45deg, #00b894, #009432); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 900; font-size: 1.2rem; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4); border: 2px solid #fff; letter-spacing: 1px; }
+
+  @media (max-width: 900px) {
+    .modal-content { flex-direction: column; align-items: center; margin: 5% auto; padding: 20px; }
+    .zoom-container { width: 100%; height: 500px; }
+    .modal { padding-top: 20px; }
   }
 </style>
 </head>
@@ -64,7 +67,7 @@
 <div id="productModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <div id="modalBody" style="display:flex; gap:30px; align-items:center; flex-wrap: wrap;">
+    <div id="modalBody" style="display:flex; width:100%; gap:30px; flex-wrap: wrap;">
       </div>
   </div>
 </div>
@@ -90,6 +93,7 @@ let products = [
 ];
 
 let cart = [];
+let currentScale = 2.5;
 
 function loadProducts(list = products) {
   let html = "";
@@ -98,13 +102,12 @@ function loadProducts(list = products) {
     let realIndex = products.indexOf(p);
     html += `
     <div class="product">
-      <img src="${p.images[0]}" onclick="openProduct(${realIndex})" title="Click to inspect">
+      <img src="${p.images[0]}" onclick="openProduct(${realIndex})" title="Click for high-res zoom">
       <h4>${p.name}</h4>
-      <p style="font-weight:bold; color:#e67e22;">₹${p.price} ${isStackable ? 'per pack' : ''}</p>
+      <p style="font-weight:bold; color:#e67e22;">₹${p.price}</p>
       ${isStackable ? `
         <div style="margin: 10px 0;">
-          <label style="font-size:11px;">Qty (Max ${p.maxQty}):</label><br>
-          <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:60%; padding:5px; border:1px solid #ccc; border-radius:4px;">
+          <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:50px; padding:5px;">
         </div>` : `<input type="hidden" id="qty-${realIndex}" value="1">`}
       <button class="buy" onclick="addToCart(${realIndex})">Add to Cart</button>
     </div>`;
@@ -118,24 +121,31 @@ function openProduct(index) {
     const p = products[index];
     const modal = document.getElementById("productModal");
     const content = document.getElementById("modalBody");
-    
-    let conditionHTML = p.condition === "NM" ? 
-        `<div style="background: linear-gradient(45deg, #00b894, #009432); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 900; font-size: 1rem; display: inline-block; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);">✨ NEAR MINT (NM)</div>` : '';
+    currentScale = 2.5;
+
+    let conditionHTML = p.condition === "NM" ? `<div class="nm-badge">✨ NEAR MINT (NM)</div>` : '';
 
     content.innerHTML = `
-        <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom(event)">
+        <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom()" onwheel="scrollZoom(event)">
             <img src="${p.images[0]}" id="zoom-img">
         </div>
-        <div style="flex:1; min-width:280px;">
+        <div style="flex:1; padding-top: 10px; min-width: 300px;">
             ${conditionHTML}
-            <h2 style="margin-top:0; color:#2c3e50;">${p.name}</h2>
-            <p style="font-size: 2rem; color: #e67e22; font-weight: bold; margin: 10px 0;">₹${p.price}</p>
-            <p style="color: #666; font-size: 0.95rem;">Hover over the image to inspect corners, surface, and holographic details. Every card is 100% authentic.</p>
-            <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
-            <button class="buy" style="padding:15px; font-size:1.1rem;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
+            <h2 style="font-size: 2.2rem; color:#2c3e50; margin-bottom: 5px;">${p.name}</h2>
+            <p style="font-size: 2.8rem; color: #e67e22; font-weight: bold; margin: 20px 0;">₹${p.price}</p>
+            <div style="background: #fdfaf0; padding: 15px; border-radius: 10px; border-left: 5px solid #ffcb05;">
+              <p style="margin:0; font-weight:bold;">🔎 Inspection Mode Active</p>
+              <p style="margin:5px 0 0 0; color:#555; font-size: 0.95rem;">
+                • Move mouse to zoom.<br>
+                • <b>Scroll wheel</b> to zoom deeper (up to 5x).<br>
+                • Check edges and corners for whitening.
+              </p>
+            </div>
+            <button class="buy" style="height: 60px; font-size: 1.4rem; margin-top: 30px; border-radius: 10px;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
         </div>
     `;
     modal.style.display = "block";
+    document.body.style.overflow = "hidden"; // Prevent background scroll
 }
 
 function zoom(e) {
@@ -144,35 +154,35 @@ function zoom(e) {
     const x = (e.offsetX / container.offsetWidth) * 100;
     const y = (e.offsetY / container.offsetHeight) * 100;
     img.style.transformOrigin = `${x}% ${y}%`;
-    img.style.transform = "scale(2.5)";
+    img.style.transform = `scale(${currentScale})`;
 }
 
-function resetZoom() { document.getElementById("zoom-img").style.transform = "scale(1)"; }
+function scrollZoom(e) {
+    e.preventDefault();
+    const step = 0.5;
+    if (e.deltaY < 0) currentScale = Math.min(currentScale + step, 5);
+    else currentScale = Math.max(currentScale - step, 1);
+    document.getElementById("zoom-img").style.transform = `scale(${currentScale})`;
+}
 
-function closeModal() { document.getElementById("productModal").style.display = "none"; }
+function resetZoom() {
+    currentScale = 2.5;
+    document.getElementById("zoom-img").style.transform = "scale(1)";
+}
+
+function closeModal() {
+    document.getElementById("productModal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
 
 window.onclick = function(event) { if (event.target == document.getElementById("productModal")) closeModal(); }
 
 function addToCart(index) {
   const qtyInput = document.getElementById(`qty-${index}`);
-  let q = parseInt(qtyInput.value) || 0;
-  const max = products[index].maxQty;
-
-  if (q > max) {
-    alert(`⚠️ Limit reached! We only have ${max} in stock.`);
-    qtyInput.value = max;
-    return;
-  }
-  if (q <= 0) {
-    alert("Please enter a quantity of 1 or more.");
-    return;
-  }
-
+  let q = parseInt(qtyInput.value) || 1;
   cart.push({ ...products[index], qty: q });
   renderCart();
 }
-
-function clearCart() { cart = []; renderCart(); }
 
 function renderCart() {
   let html = ""; let total = 0;
@@ -183,14 +193,14 @@ function renderCart() {
       html += `<p>✅ ${item.name} (x${item.qty}) - ₹${sub}</p>`;
       total += sub;
     });
-    html += `<strong>Total: ₹${total}</strong><br><button onclick="clearCart()" style="background:#ccc; color:#000; padding:5px; margin-top:5px; border:none; border-radius:5px; cursor:pointer;">Clear Cart</button>`;
+    html += `<strong>Total: ₹${total}</strong>`;
   }
   document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
   if(cart.length === 0) return alert("Cart is empty!");
-  let text = "Hi PokeIndia! I want to order:\n\n" + cart.map(i => `- ${i.name} (x${i.qty}) - ₹${i.price * i.qty}`).join("\n") + "\n\nTotal: ₹" + cart.reduce((sum, i) => sum + (i.price * i.qty), 0) + "\n\nPlease send GPay info!";
+  let text = "Hi PokeIndia! Order Request:\n\n" + cart.map(i => `- ${i.name} (x${i.qty})`).join("\n") + "\n\nTotal: ₹" + cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
