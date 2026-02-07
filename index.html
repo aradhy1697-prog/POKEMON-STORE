@@ -83,7 +83,19 @@ function loadProducts(list = products) {
 function filterProducts(cat) { loadProducts(cat === "all" ? products : products.filter(p => p.category === cat)); }
 
 function addToCart(index) {
-  let q = parseInt(document.getElementById(`qty-${index}`).value) || 1;
+  const qtyInput = document.getElementById(`qty-${index}`);
+  let q = parseInt(qtyInput.value) || 1;
+  const max = products[index].maxQty;
+
+  // Security Check: If they typed a number higher than your stock
+  if (q > max) {
+    alert(`Sorry! We only have ${max} of this item in stock. Setting quantity to ${max}.`);
+    q = max;
+    qtyInput.value = max; // This physically changes the number in the box back to the limit
+  }
+  
+  if (q < 1) q = 1; // Prevents negative numbers or zero
+
   cart.push({ ...products[index], qty: q });
   renderCart();
 }
@@ -112,3 +124,4 @@ function checkout() {
 
 loadProducts();
 </script>
+
