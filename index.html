@@ -1,189 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Pokémon Store</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  margin: 0;
-}
-
-header {
-  background: linear-gradient(90deg, #ffcb05, #ff3c3c);
-  color: black;
-  text-align: center;
-  padding: 20px;
-  font-size: 26px;
-  font-weight: bold;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  background: white;
-  padding: 10px;
-  flex-wrap: wrap;
-}
-
-nav button {
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  background: #ffcb05;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.product {
-  background: white;
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.product img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-button.buy {
-  margin-top: 10px;
-  padding: 10px;
-  background: #ff3c3c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.cart {
-  background: white;
-  margin: 20px;
-  padding: 15px;
-  border-radius: 12px;
-}
-</style>
+    <title>Pokémon Store India</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f7fb; margin: 0; padding-bottom: 50px; }
+        header { background: linear-gradient(90deg, #ffcb05, #ff3c3c); color: black; text-align: center; padding: 20px; font-size: 26px; font-weight: bold; }
+        nav { display: flex; justify-content: center; gap: 10px; background: white; padding: 10px; position: sticky; top: 0; z-index: 100; }
+        nav button { border: none; padding: 8px 12px; border-radius: 20px; background: #ffcb05; cursor: pointer; font-weight: bold; }
+        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+        .product { background: white; border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .product img { width: 100%; height: 200px; object-fit: contain; border-radius: 10px; }
+        .thumbs { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+        .thumbs img { width: 40px; height: 40px; cursor: pointer; border: 1px solid #ddd; border-radius: 5px; }
+        button.buy { margin-top: 10px; width: 100%; padding: 12px; background: #ff3c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .cart { background: white; margin: 20px; padding: 20px; border-radius: 12px; border: 2px solid #ffcb05; }
+    </style>
 </head>
-
 <body>
 
 <header>🔥 Pokémon Store India</header>
 
 <nav>
-  <button onclick="filterProducts('all')">All</button>
-  <button onclick="filterProducts('booster')">Booster Boxes</button>
-  <button onclick="filterProducts('packs')">Loose Packs</button>
-  <button onclick="filterProducts('cards')">Cards</button>
-  <button onclick="filterProducts('accessories')">Accessories</button>
+    <button onclick="filterProducts('all')">All</button>
+    <button onclick="filterProducts('booster')">Boosters</button>
 </nav>
 
 <div class="products" id="productList"></div>
 
 <div class="cart">
-<h3>🛒 Cart</h3>
-<div id="cartItems"></div>
-<button onclick="checkout()" class="buy">Checkout on WhatsApp</button>
+    <h3>🛒 Your Cart</h3>
+    <div id="cartItems">Your cart is empty</div>
+    <hr>
+    <button onclick="checkout()" class="buy">Checkout on WhatsApp</button>
 </div>
 
 <script>
 let products = [
-  let products = [
   {
-  
-  name: "Paradise Dragona Booster Box (Korean) – S12a SEALED",
-  price: 6000,
-  category: "booster",
-  images: [
-    "images/paradise1.jpg",
-    "images/paradise2.jpg",
-    "images/paradise3.jpg"
-  ]
-},
- 
+    name: "Paradise Dragona Booster Box (Korean) – S12a SEALED",
+    price: 6000,
+    category: "booster",
+    images: ["images/paradise1.jpg", "images/paradise2.jpg", "images/paradise3.jpg"]
+  },
   {
     name: "Pokémon TCG: White Flare Booster Box (Korean) – S11a SEALED",
     price: 6500,
     category: "booster",
-    images: [
-  "images/whiteflare1.jpg",
-  "images/whiteflare2.jpg",
-  "images/whiteflare3.jpg"
-]
-
+    images: ["images/whiteflare1.jpg", "images/whiteflare2.jpg", "images/whiteflare3.jpg"]
   },
   {
     name: "Korean Lost Abyss Booster Box (S11) SEALED",
     price: 7500,
     category: "booster",
-    images: [
-      "images/lostabyss1.jpg",
-      "images/lostabyss2.jpg",
-      "images/lostabyss3.jpg"
-    ]
+    images: ["images/lostabyss1.jpg", "images/lostabyss2.jpg", "images/lostabyss3.jpg"]
   }
-];
-
-
 ];
 
 let cart = [];
 
 function loadProducts(list = products) {
-  let html = "";
-  list.forEach((p, i) => {
-    html += `
-    <div class="product">
-      <div class="gallery">
-  <img src="${p.images[0]}" id="img-${i}">
-  <div class="thumbs">
-    ${p.images.map(img => `
-      <img src="${img}" onclick="document.getElementById('img-${i}').src='${img}'">
-    `).join("")}
-  </div>
-</div>
-
-      <h4>${p.name}</h4>
-      <p>₹${p.price}</p>
-      <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
-    </div>`;
-  });
-  document.getElementById("productList").innerHTML = html;
+    let html = "";
+    list.forEach((p, i) => {
+        html += `
+        <div class="product">
+            <img src="${p.images[0]}" id="img-${i}">
+            <div class="thumbs">
+                ${p.images.map(img => `<img src="${img}" onclick="document.getElementById('img-${i}').src='${img}'">`).join("")}
+            </div>
+            <h4>${p.name}</h4>
+            <p><strong>₹${p.price}</strong></p>
+            <button class="buy" onclick="addToCart(${i})">Add to Cart</button>
+        </div>`;
+    });
+    document.getElementById("productList").innerHTML = html;
 }
 
 function filterProducts(category) {
-  if(category === "all") loadProducts(products);
-  else loadProducts(products.filter(p => p.category === category));
+    if(category === 'all') loadProducts(products);
+    else loadProducts(products.filter(p => p.category === category));
 }
 
 function addToCart(index) {
-  cart.push(products[index]);
-  renderCart();
+    cart.push(products[index]);
+    renderCart();
 }
 
 function renderCart() {
-  let html = "";
-  cart.forEach(p => {
-    html += `<p>${p.name} - ₹${p.price}</p>`;
-  });
-  document.getElementById("cartItems").innerHTML = html;
+    if (cart.length === 0) {
+        document.getElementById("cartItems").innerHTML = "Your cart is empty";
+        return;
+    }
+    let html = "";
+    let total = 0;
+    cart.forEach(p => {
+        html += `<p>• ${p.name} - ₹${p.price}</p>`;
+        total += p.price;
+    });
+    html += `<p><strong>Total: ₹${total}</strong></p>`;
+    document.getElementById("cartItems").innerHTML = html;
 }
 
 function checkout() {
-  let text = "Hi! I want to order:\n";
-  cart.forEach(p => text += p.name + " - ₹" + p.price + "\n");
-  window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
+    if(cart.length === 0) return alert("Add items first!");
+    let text = "Hi! I want to order from your Pokémon Store:\n\n";
+    cart.forEach(p => text += "- " + p.name + " (₹" + p.price + ")\n");
+    let total = cart.reduce((sum, item) => sum + item.price, 0);
+    text += "\nTotal: ₹" + total + "\n\nPlease share GPay details!";
+    window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
 loadProducts();
@@ -191,11 +115,3 @@ loadProducts();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
