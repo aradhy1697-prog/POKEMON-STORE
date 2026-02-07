@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pokémon Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f6f6f6;
+    }
+
+    header {
+      background: #ffcb05;
+      text-align: center;
+      padding: 20px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .product img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .price {
+      color: green;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    .cart {
+      background: white;
+      margin: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .checkout {
+      background: #25D366;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCart();
+    }
+
+    function updateCart() {
+      let cartList = document.getElementById("cartItems");
+      cartList.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+        cartList.innerHTML += `<p>${item.name} - ₹${item.price}</p>`;
+      });
+
+      document.getElementById("total").innerText = "Total: ₹" + total;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+
+      let message = "Hello! I want to order:%0A";
+      let total = 0;
+
+      cart.forEach(item => {
+        message += "- " + item.name + " ₹" + item.price + "%0A";
+        total += item.price;
+      });
+
+      message += "%0ATotal = ₹" + total;
+
+      window.open("https://wa.me/917976132992?text=" + message);
+    }
+  </script>
+</head>
+<body>
+
+<header>
+⚡ Pokémon Store — Add to Cart & Order
+</header>
+
+<!-- BOOSTER BOX -->
+<h2>📦 Booster Boxes</h2>
+<div class="products">
+
+  <div class="product">
+    <img src="https://via.placeholder.com/300">
+    <h3>Pokémon Booster Box</h3>
+    <p class="price">₹3999</p>
+    <button class="btn" onclick="addToCart('Pokémon Booster Box', 3999)">Add to Cart</button>
+  </div>
+
+</div>
+
+<!-- LOOSE PACKS -->
+<h2>🎴 Loose Packs</h2>
+<div class="products">
+
+  <div class="product">
+    <img src="https://via.placeholder.com/300">
+    <h3>Loose Pokémon Pack</h3>
+    <p class="price">₹499</p>
+    <button class="btn" onclick="addToCart('Loose Pokémon Pack', 499)">Add to Cart</button>
+  </div>
+
+</div>
+
+<!-- CARDS -->
+<h2>🃏 Pokémon Cards</h2>
+<div class="products">
+
+  <div class="product">
+    <img src="https://via.placeholder.com/300">
+    <h3>Rare Pokémon Card</h3>
+    <p class="price">₹799</p>
+    <button class="btn" onclick="addToCart('Rare Pokémon Card', 799)">Add to Cart</button>
+  </div>
+
+</div>
+
+<!-- ACCESSORIES -->
+<h2>🧢 Accessories</h2>
+<div class="products">
+
+  <div class="product">
+    <img src="https://via.placeholder.com/300">
+    <h3>Pikachu Keychain</h3>
+    <p class="price">₹299</p>
+    <button class="btn" onclick="addToCart('Pikachu Keychain', 299)">Add to Cart</button>
+  </div>
+
+</div>
+
+<!-- CART -->
+<div class="cart">
+  <h2>🛒 Cart</h2>
+  <div id="cartItems"></div>
+  <h3 id="total">Total: ₹0</h3>
+  <div class="checkout" onclick="checkout()">Checkout on WhatsApp</div>
+</div>
+
+</body>
+</html>
