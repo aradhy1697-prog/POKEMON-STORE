@@ -292,16 +292,29 @@ function toggleCart() {
     const modal = document.getElementById("cartModal");
     const list = document.getElementById("cartList");
     const total = document.getElementById("cartTotal");
-    if(cart.length === 0) { list.innerHTML = "Inventory is currently empty."; total.innerHTML = ""; } 
-    else {
+    
+    if(cart.length === 0) {
+        list.innerHTML = "Inventory is currently empty.";
+        total.innerHTML = "";
+    } else {
         list.innerHTML = cart.map((item, i) => `
             <div class="cart-item">
                 <span>${item.name}</span>
                 <span style="color:var(--neon-price)">₹${item.price} <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red; cursor:pointer; margin-left:10px;">[X]</button></span>
             </div>
         `).join('');
-        const sum = cart.reduce((a, b) => a + b.price, 0);
-        total.innerHTML = `TOTAL: <span style="color:var(--neon-price)">₹${sum}</span>`;
+        
+        const subtotal = cart.reduce((a, b) => a + b.price, 0);
+        const prepaidTotal = subtotal + 150;
+        const codTotal = subtotal + 250;
+
+        total.innerHTML = `
+            <div style="margin-top:20px; border-top: 1px solid #333; padding-top:10px; font-family:'Orbitron';">
+                <p style="font-size:0.9rem; color:#aaa;">Subtotal: ₹${subtotal}</p>
+                <p style="color:var(--neon-price); font-size:1.1rem; margin:5px 0;">Prepaid Total: ₹${prepaidTotal} <br><small style="font-size:0.7rem;">(GPay/UPI + ₹150 Shipping)</small></p>
+                <p style="color:#ffcb05; font-size:1.1rem; margin:5px 0;">COD Total: ₹${codTotal} <br><small style="font-size:0.7rem;">(Cash on Delivery + ₹250 Shipping)</small></p>
+            </div>
+        `;
     }
     modal.style.display = (modal.style.display === "block") ? "none" : "block";
 }
@@ -322,7 +335,13 @@ function loadNextPage() { itemsToShow += 12; loadProducts(); }
 
 function checkout() {
     if(cart.length === 0) return;
-    const text = "Order from PokeIndia:\n" + cart.map(i => `- ${i.name}`).join("\n") + "\n\nTotal: ₹" + cart.reduce((a,b)=>a+b.price, 0);
+    const subtotal = cart.reduce((a, b) => a + b.price, 0);
+    const text = "Hi PokeIndia TCG, I want to order:\n" + 
+                 cart.map(i => `- ${i.name}`).join("\n") + 
+                 "\n\nSubtotal: ₹" + subtotal +
+                 "\nPrepaid Total (₹150 ship): ₹" + (subtotal + 150) +
+                 "\nCOD Total (₹250 ship): ₹" + (subtotal + 250) +
+                 "\n\nPlease let me know your GPay details or if I should go with COD!";
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
@@ -330,5 +349,6 @@ loadProducts();
 </script>
 </body>
 </html>
+
 
 
