@@ -14,6 +14,7 @@
   .product { background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
   .product:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
   .product img { width: 100%; border-radius: 10px; cursor: pointer; margin-bottom: 10px; }
+  .stock-tag { font-size: 0.8rem; color: #7f8c8d; font-weight: bold; background: #ecf0f1; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 5px; }
   .buy { background: #e67e22; color: white; border: none; padding: 10px 15px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
   .buy:hover { background: #d35400; }
   #cart { background: white; padding: 20px; border-radius: 15px; margin-top: 40px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
@@ -53,7 +54,7 @@
 
 <script>
 let products = [
-  // --- SINGLE CARDS (No Qty Box, Max 1) ---
+  // --- SINGLE CARDS ---
   { name: "Fire Energy 010 - Cracked Ice Holo", price: 500, category: "cards", condition: "NM", images: ["images/fire.jpg"], maxQty: 1 },
   { name: "Fighting Energy SVE 014 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/fighting.jpg"], maxQty: 1 },
   { name: "Water Energy SVE 011 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/water.jpg"], maxQty: 1 },
@@ -62,25 +63,23 @@ let products = [
   { name: "Basic Lightning Energy SVE 012 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/electric.jpg"], maxQty: 1 },
   { name: "Basic Darkness Energy SVE 015 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/dark.jpg"], maxQty: 1 },
   { name: "Metal Energy SVE 016 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/metal.jpg"], maxQty: 1 },
-
   // --- BOOSTER BOXES ---
   { name: "Paradise Dragona Box (Korean) – SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
   { name: "White Flare Booster Box (Korean) – SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
   { name: "Korean Lost Abyss Booster Box – SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
-
-  // --- LOOSE PACKS (Max Limits Applied) ---
-  { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 30 },
-  { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 20 },
-  { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 5 },
-  { name: "Crimson Haze Pack (Japanese)", price: 270, category: "packs", images: ["images/crimson.jpg"], maxQty: 30 },
-  { name: "Super Electric Breaker Pack (Japanese)", price: 450, category: "packs", images: ["images/electricbreaker.jpg"], maxQty: 30 },
-  { name: "Ruler of the Black Flame Pack (Korean)", price: 230, category: "packs", images: ["images/robf.jpg"], maxQty: 30 },
-  { name: "Mega Brave Pack (Japanese) – M1L", price: 330, category: "packs", images: ["images/megabrave.jpg"], maxQty: 30 },
-  { name: "Pokemon Sword Pack (Japanese) – S1W", price: 1500, category: "packs", images: ["images/swordv.jpg"], maxQty: 30 },
-  { name: "2021 McDonald’s 25th Anniv. Pack (English)", price: 1200, category: "packs", images: ["images/mcdonald.jpg"], maxQty: 10 },
-  { name: "Gym Promo Pack Vol. 8 (Japanese)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 10 },
-  { name: "Gym Promo Pack Vol. 7 (Japanese)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 10 },
-  { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 30 }
+  // --- LOOSE PACKS ---
+  { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
+  { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
+  { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 1 },
+  { name: "Crimson Haze Pack (Japanese)", price: 270, category: "packs", images: ["images/crimson.jpg"], maxQty: 1 },
+  { name: "Super Electric Breaker Pack (Japanese)", price: 450, category: "packs", images: ["images/electricbreaker.jpg"], maxQty: 1 },
+  { name: "Ruler of the Black Flame Pack (Korean)", price: 230, category: "packs", images: ["images/robf.jpg"], maxQty: 1 },
+  { name: "Mega Brave Pack (Japanese) – M1L", price: 330, category: "packs", images: ["images/megabrave.jpg"], maxQty: 3 },
+  { name: "Pokemon Sword Pack (Japanese) – S1W", price: 1500, category: "packs", images: ["images/swordv.jpg"], maxQty: 3 },
+  { name: "2021 McDonald’s 25th Anniv. Pack (English)", price: 1200, category: "packs", images: ["images/mcdonald.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 8 (Japanese)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 7 (Japanese)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 1 },
+  { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 }
 ];
 
 let cart = [];
@@ -96,11 +95,14 @@ function loadProducts(list = products) {
       <img src="${p.images[0]}" onclick="openProduct(${realIndex})">
       <div>
         <h4>${p.name}</h4>
+        ${!isSingleCard ? `<div class="stock-tag">Stock: ${p.maxQty}</div>` : ''}
         <p style="font-weight:bold; color:#e67e22;">₹${p.price}</p>
         ${isSingleCard ? 
           `<input type="hidden" id="qty-${realIndex}" value="1">` : 
           `<div style="margin: 10px 0;">
-             <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:50px; padding:5px;">
+             Qty: <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" 
+             oninput="if(this.value > ${p.maxQty}) this.value = ${p.maxQty}; if(this.value < 1) this.value = 1;"
+             style="width:50px; padding:5px;">
            </div>`
         }
       </div>
@@ -118,6 +120,8 @@ function openProduct(index) {
     const content = document.getElementById("modalBody");
     currentScale = 2.5;
     let conditionHTML = p.condition === "NM" ? `<div class="nm-badge">✨ NEAR MINT (NM)</div>` : '';
+    let stockDisplay = (p.category !== 'cards') ? `<p style="color:#7f8c8d;"><b>Available Stock:</b> ${p.maxQty}</p>` : '';
+
     content.innerHTML = `
         <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom()" onwheel="scrollZoom(event)">
             <img src="${p.images[0]}" id="zoom-img">
@@ -125,6 +129,7 @@ function openProduct(index) {
         <div style="flex:1; padding-top: 10px; min-width: 300px;">
             ${conditionHTML}
             <h2 style="font-size: 2.2rem; color:#2c3e50;">${p.name}</h2>
+            ${stockDisplay}
             <p style="font-size: 2.8rem; color: #e67e22; font-weight: bold; margin: 20px 0;">₹${p.price}</p>
             <button class="buy" style="height: 60px; font-size: 1.4rem;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
         </div>`;
@@ -162,12 +167,10 @@ function addToCart(index) {
   const p = products[index];
   const qtyInput = document.getElementById(`qty-${index}`);
   let requestedQty = parseInt(qtyInput.value) || 1;
-  
-  // Security Check: Total already in cart
   let inCart = cart.filter(i => i.name === p.name).reduce((sum, i) => sum + i.qty, 0);
 
   if (p.maxQty && (inCart + requestedQty) > p.maxQty) {
-    alert(`⚠️ Cannot add! You already have ${inCart} in your cart. Max stock is ${p.maxQty}.`);
+    alert(`⚠️ Cannot add more! Max stock for this item is ${p.maxQty}.`);
     return;
   }
 
