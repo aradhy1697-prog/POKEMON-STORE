@@ -53,22 +53,22 @@
 
 <script>
 let products = [
-  // --- SINGLE CARDS (8 TOTAL - No Qty Box) ---
-  { name: "Fire Energy 010 - Cracked Ice Holo", price: 500, category: "cards", condition: "NM", images: ["images/fire.jpg"] },
-  { name: "Fighting Energy SVE 014 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/fighting.jpg"] },
-  { name: "Water Energy SVE 011 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/water.jpg"] },
-  { name: "Basic Grass Energy - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/leaf.jpg"] },
-  { name: "Basic Psychic Energy 013 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/psychic.jpg"] },
-  { name: "Basic Lightning Energy SVE 012 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/electric.jpg"] },
-  { name: "Basic Darkness Energy SVE 015 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/dark.jpg"] },
-  { name: "Metal Energy SVE 016 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/metal.jpg"] },
+  // --- SINGLE CARDS (No Qty Box, Max 1) ---
+  { name: "Fire Energy 010 - Cracked Ice Holo", price: 500, category: "cards", condition: "NM", images: ["images/fire.jpg"], maxQty: 1 },
+  { name: "Fighting Energy SVE 014 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/fighting.jpg"], maxQty: 1 },
+  { name: "Water Energy SVE 011 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/water.jpg"], maxQty: 1 },
+  { name: "Basic Grass Energy - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/leaf.jpg"], maxQty: 1 },
+  { name: "Basic Psychic Energy 013 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/psychic.jpg"], maxQty: 1 },
+  { name: "Basic Lightning Energy SVE 012 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/electric.jpg"], maxQty: 1 },
+  { name: "Basic Darkness Energy SVE 015 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/dark.jpg"], maxQty: 1 },
+  { name: "Metal Energy SVE 016 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/metal.jpg"], maxQty: 1 },
 
-  // --- BOOSTER BOXES (3 TOTAL) ---
+  // --- BOOSTER BOXES ---
   { name: "Paradise Dragona Box (Korean) – SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
   { name: "White Flare Booster Box (Korean) – SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
   { name: "Korean Lost Abyss Booster Box – SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
 
-  // --- LOOSE PACKS (12 TOTAL - With Qty Box) ---
+  // --- LOOSE PACKS (Max Limits Applied) ---
   { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 30 },
   { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 20 },
   { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 5 },
@@ -88,7 +88,7 @@ let currentScale = 2.5;
 
 function loadProducts(list = products) {
   let html = "";
-  list.forEach((p, i) => {
+  list.forEach((p) => {
     let realIndex = products.indexOf(p);
     let isSingleCard = (p.category === 'cards');
     html += `
@@ -100,7 +100,7 @@ function loadProducts(list = products) {
         ${isSingleCard ? 
           `<input type="hidden" id="qty-${realIndex}" value="1">` : 
           `<div style="margin: 10px 0;">
-             <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty || 99}" style="width:50px; padding:5px;">
+             <input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:50px; padding:5px;">
            </div>`
         }
       </div>
@@ -163,29 +163,16 @@ function addToCart(index) {
   const qtyInput = document.getElementById(`qty-${index}`);
   let requestedQty = parseInt(qtyInput.value) || 1;
   
-  // Calculate how many are ALREADY in the cart for this item
-  let existingInCart = cart
-    .filter(item => item.name === p.name)
-    .reduce((sum, item) => sum + item.qty, 0);
+  // Security Check: Total already in cart
+  let inCart = cart.filter(i => i.name === p.name).reduce((sum, i) => sum + i.qty, 0);
 
-  let totalPotential = existingInCart + requestedQty;
-
-  // Check against maxQty (if defined)
-  if (p.maxQty && totalPotential > p.maxQty) {
-    let allowedMore = p.maxQty - existingInCart;
-    if (allowedMore <= 0) {
-      alert(`⚠️ Sorry! You already have the maximum available (${p.maxQty}) in your cart.`);
-    } else {
-      alert(`⚠️ Limit reached! You can only add ${allowedMore} more of this item (Max stock: ${p.maxQty}).`);
-    }
-    qtyInput.value = (allowedMore > 0) ? allowedMore : 1;
-    return; // STOP the process here
+  if (p.maxQty && (inCart + requestedQty) > p.maxQty) {
+    alert(`⚠️ Cannot add! You already have ${inCart} in your cart. Max stock is ${p.maxQty}.`);
+    return;
   }
 
-  // If okay, add to cart
   cart.push({ ...p, qty: requestedQty });
   renderCart();
-}
 }
 
 function renderCart() {
@@ -208,4 +195,3 @@ loadProducts();
 </script>
 </body>
 </html>
-
