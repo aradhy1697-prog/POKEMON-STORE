@@ -11,6 +11,7 @@
             --accent: #e67e22;
             --bg-black: #000000;
             --text: #ffffff;
+            --nm-grad: linear-gradient(45deg, #8e44ad, #ff00ff);
         }
 
         body { 
@@ -37,25 +38,38 @@
         .product:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); }
         .product img { width: 100%; border-radius: 10px; cursor: pointer; height: 250px; object-fit: contain; background: #111; margin-bottom: 15px; }
 
+        /* Unique NM- Badge Style */
         .nm-badge { 
-            background: linear-gradient(90deg, #e67e22, #f39c12); color: white; padding: 4px 12px; border-radius: 50px; 
-            font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 10px;
+            background: var(--nm-grad); color: white; padding: 5px 15px; border-radius: 50px; 
+            font-size: 0.85rem; font-weight: 800; display: inline-block; margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+            animation: pulse 2s infinite;
         }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        .product h4 { font-size: 1rem; margin: 10px 0; height: 40px; overflow: hidden; }
-        .price-tag { font-size: 1.5rem; color: var(--accent); font-weight: bold; margin: 10px 0; }
-        .qty-input { width: 60px; background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; margin-bottom: 10px; text-align: center; }
+        .stock-tag { color: #2ecc71; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; }
+        .product h4 { font-size: 1rem; margin: 5px 0; height: 40px; overflow: hidden; }
+        .price-tag { font-size: 1.5rem; color: var(--accent); font-weight: bold; margin: 5px 0; }
+        
+        .qty-area { margin-bottom: 10px; }
+        .qty-input { width: 60px; background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; text-align: center; }
 
         button.buy { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button.buy:hover { background: #ff9f43; }
 
+        /* Modal & True Zoom */
         #productModal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
         .modal-content { background: #111; margin: 5% auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 20px; position: relative; display: flex; flex-wrap: wrap; gap: 30px; border: 1px solid #333; }
         .close { position: absolute; right: 20px; top: 10px; font-size: 45px; color: white; cursor: pointer; }
         
-        .zoom-box { width: 100%; max-width: 400px; height: 500px; overflow: hidden; border-radius: 15px; background: #000; }
-        .zoom-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; }
-        .zoom-box:hover img { transform: scale(1.8); cursor: zoom-in; }
+        .zoom-box { 
+            width: 100%; max-width: 400px; height: 500px; overflow: hidden; 
+            border-radius: 15px; background: #000; position: relative; cursor: crosshair; 
+        }
+        .zoom-box img { 
+            width: 100%; height: 100%; object-fit: contain; 
+            transform-origin: center; transition: transform 0.1s ease-out; 
+        }
 
         .cart-section { max-width: 1200px; margin: 40px auto; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
         .checkout-btn { background: #25d366; color: white; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 1.3rem; margin-top: 20px; }
@@ -96,7 +110,7 @@ const products = [
   { name: "White Flare Booster Box (Korean)", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
   { name: "Korean Lost Abyss Booster Box", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
   
-  // 12 PACKS (YOUR EXACT LIST)
+  // 12 PACKS
   { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
   { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
   { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 1 },
@@ -159,13 +173,15 @@ function loadProducts(list = products) {
         const realIdx = products.indexOf(p);
         const isCard = p.category === 'cards';
         const badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
-        const qtyBox = (!isCard) ? `<input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}">` : '';
+        const stockInfo = (!isCard) ? `<div class="stock-tag">Stock: ${p.maxQty} avail.</div>` : '';
+        const qtyBox = (!isCard) ? `<div class="qty-area"><input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
 
         html += `
         <div class="product">
             <div>
                 ${badge}
-                <img src="${p.images[0]}" onclick="openProduct(${realIdx})" onerror="this.src='https://placehold.co/400x600?text=Image+Not+Found'">
+                <img src="${p.images[0]}" onclick="openProduct(${realIdx})">
+                ${stockInfo}
                 <h4>${p.name}</h4>
                 <p class="price-tag">₹${p.price}</p>
                 ${qtyBox}
@@ -184,17 +200,35 @@ function openProduct(index) {
 
     body.innerHTML = `
         <div style="flex:1; min-width:300px; display:flex; flex-direction:column; align-items:center;">
-            <div class="zoom-box"><img src="${p.images[0]}" onerror="this.src='https://placehold.co/400x600?text=Image+Not+Found'"></div>
+            <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
+                <img src="${p.images[0]}" id="zoomImg">
+            </div>
         </div>
         <div style="flex:1; min-width:300px; color:white;">
             ${badge}
             <h2 style="margin-top:10px;">${p.name}</h2>
             <p class="price-tag" style="font-size:2.8rem;">₹${p.price}</p>
+            <p style="color:#aaa;">Hover the image to inspect the card quality.</p>
             <button class="buy" style="height:60px; font-size:1.3rem;" onclick="addToCartModal(${index}); closeModal()">Add to Cart</button>
         </div>
     `;
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
+}
+
+// True Coordinate Zoom Logic
+function handleZoom(e) {
+    const box = e.currentTarget;
+    const img = box.querySelector('img');
+    const x = e.offsetX / box.offsetWidth * 100;
+    const y = e.offsetY / box.offsetHeight * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = "scale(2.5)";
+}
+
+function resetZoom(e) {
+    const img = e.currentTarget.querySelector('img');
+    img.style.transform = "scale(1)";
 }
 
 function closeModal() {
@@ -207,9 +241,17 @@ function filterProducts(cat) {
 }
 
 function addToCart(idx) {
+    const p = products[idx];
     const qtyInput = document.getElementById(`qty-${idx}`);
     let qty = qtyInput ? parseInt(qtyInput.value) : 1;
-    for(let i=0; i<qty; i++) { cart.push(products[idx]); }
+
+    // Validation Popup
+    if (qty > p.maxQty) {
+        alert(`❌ Error: You are ordering ${qty} items, but we only have ${p.maxQty} in stock.`);
+        return;
+    }
+
+    for(let i=0; i<qty; i++) { cart.push(p); }
     renderCart();
 }
 
