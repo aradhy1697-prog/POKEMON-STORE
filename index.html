@@ -54,7 +54,12 @@
 
 <script>
 let products = [
-  // --- SINGLE CARDS ---
+  // --- BOOSTER BOXES ---
+  { name: "Paradise Dragona Box (Korean) – SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
+  { name: "White Flare Booster Box (Korean) – SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
+  { name: "Korean Lost Abyss Booster Box – SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
+
+  // --- SINGLE CARDS (ENERGY + CRACKED ICE) ---
   { name: "Fire Energy 010 - Cracked Ice Holo", price: 500, category: "cards", condition: "NM", images: ["images/fire.jpg"], maxQty: 1 },
   { name: "Fighting Energy SVE 014 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/fighting.jpg"], maxQty: 1 },
   { name: "Water Energy SVE 011 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/water.jpg"], maxQty: 1 },
@@ -63,10 +68,47 @@ let products = [
   { name: "Basic Lightning Energy SVE 012 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/electric.jpg"], maxQty: 1 },
   { name: "Basic Darkness Energy SVE 015 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/dark.jpg"], maxQty: 1 },
   { name: "Metal Energy SVE 016 - Cracked Ice Holo", price: 400, category: "cards", condition: "NM", images: ["images/metal.jpg"], maxQty: 1 },
-  // --- BOOSTER BOXES ---
-  { name: "Paradise Dragona Box (Korean) – SEALED", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
-  { name: "White Flare Booster Box (Korean) – SEALED", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
-  { name: "Korean Lost Abyss Booster Box – SEALED", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
+
+  // --- NEW SINGLE CARDS DROP (1-39) ---
+  { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM", images: ["images/manphy1.jpg", "images/manphy2.jpg"], maxQty: 1 },
+  { name: "Arceus Black Star Promo Japanese", price: 600, category: "cards", condition: "NM", images: ["images/arceus3.jpg"], maxQty: 1 },
+  { name: "Muk & Alolan Muk GX Tag Team S-Chinese", price: 900, category: "cards", condition: "NM", images: ["images/muktag.jpg"], maxQty: 1 },
+  { name: "Dialga Movie Commemoration Promo JP", price: 1400, category: "cards", condition: "NM", images: ["images/dialga2.jpg"], maxQty: 1 },
+  { name: "Professor Sada's Vitality 085/066 JP", price: 700, category: "cards", condition: "NM", images: ["images/proff.jpg"], maxQty: 1 },
+  { name: "Giratina Holo Diamond & Pearl JP", price: 1700, category: "cards", condition: "NM", images: ["images/giratina1.jpg"], maxQty: 1 },
+  { name: "Greninja & Zoroark GX Tag Team S-Chinese", price: 1200, category: "cards", condition: "NM", images: ["images/greytag1.jpg", "images/greytag2.jpg"], maxQty: 1 },
+  { name: "Pikachu GG30/GG70 Crown Zenith FA", price: 2500, category: "cards", condition: "NM", images: ["images/pika1.jpg"], maxQty: 1 },
+  { name: "Pikachu & Zekrom GX Tag Team 041/173", price: 2800, category: "cards", condition: "NM", images: ["images/pikatag.jpg"], maxQty: 1 },
+  { name: "Night Stretcher SR 083/063 JP", price: 500, category: "cards", condition: "NM", images: ["images/stretcher1.jpg"], maxQty: 1 },
+  { name: "Hoopa EX Legendary Shine JP", price: 1800, category: "cards", condition: "NM", images: ["images/hoopa2.jpg"], maxQty: 1 },
+  { name: "Mega Sableye & Tyranitar GX S-Chinese", price: 700, category: "cards", condition: "NM", images: ["images/sabletag1.jpg", "images/sabletag2.jpg"], maxQty: 1 },
+  { name: "Alakazam EX 1st Edition Psychic King JP", price: 900, category: "cards", condition: "NM", images: ["images/alakazamex.jpg"], maxQty: 1 },
+  { name: "Deoxys Holo 1st Edition DP Japanese", price: 2000, category: "cards", condition: "NM", images: ["images/deoxys.jpg"], maxQty: 1 },
+  { name: "Vulpix Art Rare 067/063 Japanese", price: 500, category: "cards", condition: "NM", images: ["images/vulpixar.jpg"], maxQty: 1 },
+  { name: "Cresselia 1st Ed DP Holo (Swirl)", price: 2000, category: "cards", condition: "NM", images: ["images/cresselia1.jpg", "images/cresselia2.jpg"], maxQty: 1 },
+  { name: "Dialga LV. X 1st Edition DP3 JP", price: 4500, category: "cards", condition: "NM", images: ["images/dialga1.jpg"], maxQty: 1 },
+  { name: "Porygon Holo 1st Ed Diamond & Pearl JP", price: 1800, category: "cards", condition: "NM", images: ["images/porygon1.jpg"], maxQty: 1 },
+  { name: "Togekiss Ancient Trait XY Japanese", price: 620, category: "cards", condition: "NM", images: ["images/togekiss.jpg"], maxQty: 1 },
+  { name: "Hoopa EX Best of XY 058/171 JP", price: 1000, category: "cards", condition: "NM", images: ["images/hoopa1.jpg"], maxQty: 1 },
+  { name: "Turtonator 211/S-P Get Challenge Promo", price: 400, category: "cards", condition: "NM", images: ["images/turtonator.jpg"], maxQty: 1 },
+  { name: "Porygon-Z 067/081 Rare Bandit Ring JP", price: 850, category: "cards", condition: "NM", images: ["images/porygon.jpg"], maxQty: 1 },
+  { name: "Galarian Zapdos SWSH Black Star Promo", price: 500, category: "cards", condition: "NM", images: ["images/galarzapdos.jpg"], maxQty: 1 },
+  { name: "Ducklett 008/BW-P Gym Promo JP", price: 600, category: "cards", condition: "NM", images: ["images/duckstamp.jpg"], maxQty: 1 },
+  { name: "Mothim Holo 1st Edition 2009 JP", price: 599, category: "cards", condition: "NM", images: ["images/mothim.jpg"], maxQty: 1 },
+  { name: "Mabosstiff ex Promo 033/SV-P Gym Holo", price: 350, category: "cards", condition: "NM", images: ["images/mabosstiff.jpg"], maxQty: 1 },
+  { name: "Inteleon VMAX Alternate Art Fusion Strike", price: 3800, category: "cards", condition: "NM", images: ["images/inteleon1.jpg", "images/inteleon2.jpg"], maxQty: 1 },
+  { name: "Marnie Rainbow Rare Secret SWSH", price: 2000, category: "cards", condition: "NM", images: ["images/marnie1.jpg"], maxQty: 1 },
+  { name: "Minccino 152/086 Black Bolt Holo JP", price: 900, category: "cards", condition: "NM", images: ["images/minccino1.jpg", "images/minccino2.jpg"], maxQty: 1 },
+  { name: "Morpeko V-Union 4 Card Set Promo", price: 1100, category: "cards", condition: "NM", images: ["images/morpeko1.jpg", "images/morpeko2.jpg", "images/morpeko3.jpg", "images/morpeko4.jpg"], maxQty: 1 },
+  { name: "Arceus Holo LV.X Deck Grass 1st Ed JP", price: 3500, category: "cards", condition: "NM", images: ["images/arceus1.jpg"], maxQty: 1 },
+  { name: "Urshifu V 158/125 Chinese", price: 900, category: "cards", condition: "NM", images: ["images/urshifu1.jpg"], maxQty: 1 },
+  { name: "Mega Pidgeot-EX 105/108 XY Evolutions", price: 2000, category: "cards", condition: "NM", images: ["images/megapidgeot.jpg"], maxQty: 1 },
+  { name: "Ice Rider Calyrex 001/006 Sealed Promo", price: 1200, category: "cards", condition: "NM", images: ["images/calyrex.jpg"], maxQty: 1 },
+  { name: "Battle Reporter Full Art Furious Fists", price: 2100, category: "cards", condition: "NM", images: ["images/battlereporter.jpg"], maxQty: 1 },
+  { name: "Darkrai Holo Movie Promo JP", price: 1500, category: "cards", condition: "NM", images: ["images/darkrai.jpg"], maxQty: 1 },
+  { name: "Rayquaza GX 100/173 Tag All Stars JP", price: 849, category: "cards", condition: "NM", images: ["images/rayquaza.jpg"], maxQty: 1 },
+  { name: "Genesect EX 11/101 Plasma Blast Holo", price: 2600, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg", "images/gensectholo2.jpg"], maxQty: 1 },
+
   // --- LOOSE PACKS ---
   { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
   { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
@@ -80,6 +122,11 @@ let products = [
   { name: "Gym Promo Pack Vol. 8 (Japanese)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 1 },
   { name: "Gym Promo Pack Vol. 7 (Japanese)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 1 },
   { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 }
+];
+
+// ... (functions remain exactly the same as your HTML file)
+loadProducts();
+</script>
 ];
 
 let cart = [];
@@ -198,3 +245,4 @@ loadProducts();
 </script>
 </body>
 </html>
+
