@@ -218,56 +218,54 @@ function filterProducts(cat) { loadProducts(cat === "all" ? products : products.
 function openProduct(index) {
     const p = products[index];
     currentImgIndex = 0;
+    currentScale = 2.5; 
     const modal = document.getElementById("productModal");
     const content = document.getElementById("modalBody");
     
+    // This fixes the "NM-" showing on every card
+    let badgeHTML = (p.category === 'cards' && p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
+    let stockDisplay = (p.category !== 'cards') ? `<p style="color:#ffcb05;"><b>Available Stock:</b> ${p.maxQty}</p>` : '';
+
     let navButtons = p.images.length > 1 ? `
-        <div style="margin: 15px 0; display:flex; gap:10px;">
-            <button onclick="changeModalImg(${index}, -1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:5px; font-weight:bold;">◀ Prev</button>
-            <button onclick="changeModalImg(${index}, 1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:5px; font-weight:bold;">Next ▶</button>
+        <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+            <button onclick="changeModalImg(${index}, -1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:8px; font-weight:bold;">◀ Prev</button>
+            <button onclick="changeModalImg(${index}, 1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:8px; font-weight:bold;">Next ▶</button>
         </div>` : '';
 
     content.innerHTML = `
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; min-width:300px;">
             <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom()">
-                <img src="${p.images[0]}" id="zoom-img">
+                <img src="${p.images[0]}" id="zoom-img" style="transform: scale(1); transition: transform 0.1s ease-out;">
             </div>
             ${navButtons}
         </div>
-        <div style="flex:1; min-width:300px;">
-            ${p.condition === 'NM-' ? '<div class="nm-badge">✨ NM-</div>' : ''}
-            <h2 style="color:#2c3e50;">${p.name}</h2>
-            <p style="font-size: 2.5rem; color: #e67e22; font-weight: bold; margin: 20px 0;">₹${p.price}</p>
-            <button class="buy" style="height: 60px; font-size: 1.2rem;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
+        <div style="flex:1; padding:20px; min-width:300px; color:white;">
+            ${badgeHTML}
+            <h2 style="font-size: 1.8rem; margin-top:10px; color:white;">${p.name}</h2>
+            ${stockDisplay}
+            <p style="font-size: 2.2rem; color: #e67e22; font-weight: bold; margin: 20px 0;">₹${p.price}</p>
+            <button class="buy" style="height: 60px; font-size: 1.4rem;" onclick="addToCart(${index}); closeModal()">Add to Cart</button>
         </div>`;
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
 }
 
-function changeModalImg(pIdx, step) {
-    const p = products[pIdx];
-    currentImgIndex = (currentImgIndex + step + p.images.length) % p.images.length;
-    document.getElementById("zoom-img").src = p.images[currentImgIndex];
-    resetZoom();
-}
-
 function zoom(e) {
     const img = document.getElementById("zoom-img");
     const container = e.currentTarget;
-    const x = (e.offsetX / container.offsetWidth) * 100;
-    const y = (e.offsetY / container.offsetHeight) * 100;
-    img.style.transformOrigin = `${x}% ${y}%`;
-    img.style.transform = `scale(${currentScale})`;
+    const x = e.offsetX / container.offsetWidth;
+    const y = e.offsetY / container.offsetHeight;
+    
+    img.style.transformOrigin = (x * 100) + "% " + (y * 100) + "%";
+    img.style.transform = "scale(2.5)";
 }
 
-function resetZoom() { document.getElementById("zoom-img").style.transform = "scale(1)"; }
-function closeModal() { document.getElementById("productModal").style.display = "none"; document.body.style.overflow = "auto"; }
-
-function addToCart(index) {
-    const p = products[index];
-    const qty = parseInt(document.getElementById(`qty-${index}`).value) || 1;
-    cart.push({ ...p, qty });
-    renderCart();
+function resetZoom() {
+    const img = document.getElementById("zoom-img");
+    if(img) {
+        img.style.transform = "scale(1)";
+        img.style.transformOrigin = "center center";
+    }
 }
 
 function renderCart() {
@@ -286,6 +284,7 @@ loadProducts();
 </script>
 </body>
 </html>
+
 
 
 
