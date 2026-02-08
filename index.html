@@ -159,10 +159,33 @@ function closeModal() {
 }
 
 function addToCart(index) {
+  const p = products[index];
   const qtyInput = document.getElementById(`qty-${index}`);
-  const qty = parseInt(qtyInput.value) || 1;
-  cart.push({ ...products[index], qty: qty });
+  let requestedQty = parseInt(qtyInput.value) || 1;
+  
+  // Calculate how many are ALREADY in the cart for this item
+  let existingInCart = cart
+    .filter(item => item.name === p.name)
+    .reduce((sum, item) => sum + item.qty, 0);
+
+  let totalPotential = existingInCart + requestedQty;
+
+  // Check against maxQty (if defined)
+  if (p.maxQty && totalPotential > p.maxQty) {
+    let allowedMore = p.maxQty - existingInCart;
+    if (allowedMore <= 0) {
+      alert(`⚠️ Sorry! You already have the maximum available (${p.maxQty}) in your cart.`);
+    } else {
+      alert(`⚠️ Limit reached! You can only add ${allowedMore} more of this item (Max stock: ${p.maxQty}).`);
+    }
+    qtyInput.value = (allowedMore > 0) ? allowedMore : 1;
+    return; // STOP the process here
+  }
+
+  // If okay, add to cart
+  cart.push({ ...p, qty: requestedQty });
   renderCart();
+}
 }
 
 function renderCart() {
@@ -185,3 +208,4 @@ loadProducts();
 </script>
 </body>
 </html>
+
