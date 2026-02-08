@@ -11,96 +11,77 @@
             --accent: #e67e22;
             --bg-black: #000000;
             --text: #ffffff;
-            --nm-grad: linear-gradient(45deg, #8e44ad, #ff00ff);
+            --nm-minus-grad: linear-gradient(45deg, #8e44ad, #ff00ff);
+            --nm-grad: #3498db;
         }
 
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: var(--bg-black) !important;
-            color: var(--text);
-            margin: 0; padding: 20px; min-height: 100vh;
-        }
-
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-black); color: var(--text); margin: 0; padding: 20px; }
         .header { text-align: center; padding: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .header h1 { color: var(--primary); font-size: 2.5rem; text-transform: uppercase; margin: 0; }
 
         .nav-buttons { display: flex; justify-content: center; gap: 10px; margin: 30px 0; flex-wrap: wrap; }
-        .nav-buttons button { padding: 10px 20px; cursor: pointer; border: 1px solid var(--secondary); border-radius: 20px; background: transparent; color: white; transition: 0.3s; font-weight: bold; }
+        .nav-buttons button { padding: 10px 20px; cursor: pointer; border: 1px solid var(--secondary); border-radius: 20px; background: transparent; color: white; font-weight: bold; }
         .nav-buttons button:hover { background: var(--secondary); }
 
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: auto; }
 
         .product { 
             background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; 
-            text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s;
-            display: flex; flex-direction: column; justify-content: space-between;
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; justify-content: space-between;
         }
-        .product:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); }
+
+        /* Condition Badges */
+        .badge { padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 800; display: inline-block; margin-bottom: 10px; color: white; }
+        .nm-minus { background: var(--nm-minus-grad); animation: pulse 2s infinite; box-shadow: 0 0 10px rgba(255, 0, 255, 0.4); }
+        .nm-plain { background: var(--nm-grad); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
         .product img { width: 100%; border-radius: 10px; cursor: pointer; height: 250px; object-fit: contain; background: #111; margin-bottom: 15px; }
-
-        /* Unique NM- Badge Style */
-        .nm-badge { 
-            background: var(--nm-grad); color: white; padding: 5px 15px; border-radius: 50px; 
-            font-size: 0.85rem; font-weight: 800; display: inline-block; margin-bottom: 10px;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
-
-        .stock-tag { color: #2ecc71; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; }
-        .product h4 { font-size: 1rem; margin: 5px 0; height: 40px; overflow: hidden; }
         .price-tag { font-size: 1.5rem; color: var(--accent); font-weight: bold; margin: 5px 0; }
-        
-        .qty-area { margin-bottom: 10px; }
         .qty-input { width: 60px; background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; text-align: center; }
 
-        button.buy { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button.buy:hover { background: #ff9f43; }
+        button.buy { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* Modal & True Zoom */
+        /* Modal & Zoom */
         #productModal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
-        .modal-content { background: #111; margin: 5% auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 20px; position: relative; display: flex; flex-wrap: wrap; gap: 30px; border: 1px solid #333; }
-        .close { position: absolute; right: 20px; top: 10px; font-size: 45px; color: white; cursor: pointer; }
-        
-        .zoom-box { 
-            width: 100%; max-width: 400px; height: 500px; overflow: hidden; 
-            border-radius: 15px; background: #000; position: relative; cursor: crosshair; 
-        }
-        .zoom-box img { 
-            width: 100%; height: 100%; object-fit: contain; 
-            transform-origin: center; transition: transform 0.1s ease-out; 
-        }
+        .modal-content { background: #111; margin: 2% auto; padding: 30px; width: 90%; max-width: 1000px; border-radius: 20px; position: relative; color: white; }
+        .close { position: absolute; right: 20px; top: 10px; font-size: 45px; cursor: pointer; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .modal-grid { grid-template-columns: 1fr; } }
 
-        .cart-section { max-width: 1200px; margin: 40px auto; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .checkout-btn { background: #25d366; color: white; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 1.3rem; margin-top: 20px; }
+        .zoom-box { width: 100%; height: 500px; overflow: hidden; border-radius: 15px; background: #000; position: relative; cursor: crosshair; }
+        .zoom-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s ease-out; }
+        
+        .thumb-strip { display: flex; gap: 10px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .thumb-strip img { width: 60px; height: 80px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; }
+        .thumb-strip img.active { border-color: var(--primary); }
+
+        .pagination-container { text-align: center; margin: 40px 0; }
+        .next-btn { background: var(--secondary); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>PokeIndia TCG Store</h1>
-</div>
+<div class="header"><h1>PokeIndia TCG Store</h1></div>
 
 <div class="nav-buttons">
-    <button onclick="filterProducts('all')">All Products</button>
-    <button onclick="filterProducts('booster')">Booster Boxes</button>
-    <button onclick="filterProducts('packs')">Loose Packs</button>
-    <button onclick="filterProducts('cards')">Single Cards</button>
+    <button onclick="changeCategory('all')">All Products</button>
+    <button onclick="changeCategory('booster')">Booster Boxes</button>
+    <button onclick="changeCategory('packs')">Loose Packs</button>
+    <button onclick="changeCategory('cards')">Single Cards</button>
 </div>
 
 <div class="container" id="productList"></div>
 
+<div class="pagination-container" id="pagination">
+    <button class="next-btn" onclick="loadNextPage()">Next Page / Load More</button>
+</div>
+
 <div id="productModal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <div id="modalBody" style="display: flex; flex-wrap: wrap; gap: 30px; width: 100%;"></div>
+        <div id="modalBody" class="modal-grid"></div>
     </div>
-</div>
-
-<div class="cart-section">
-    <h3>🛒 Your Shopping Cart</h3>
-    <div id="cartItems">Cart is empty</div>
-    <button class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
 </div>
 
 <script>
@@ -125,24 +106,24 @@ const products = [
   { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 },
 
   // 38 SINGLE CARDS
-  { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM-", images: ["images/manphy1.jpg"], maxQty: 1 },
+  { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM-", images: ["images/manphy1.jpg", "images/manphy2.jpg"], maxQty: 1 },
   { name: "Arceus Black Star Promo Japanese", price: 600, category: "cards", condition: "NM-", images: ["images/arceus3.jpg"], maxQty: 1 },
-  { name: "Muk & Alolan Muk GX Tag Team", price: 900, category: "cards", condition: "NM", images: ["images/muktag.jpg"], maxQty: 1 },
-  { name: "Dialga Movie Commemoration Promo", price: 1400, category: "cards", condition: "NM", images: ["images/dialga2.jpg"], maxQty: 1 },
+  { name: "Muk & Alolan Muk GX Tag Team", price: 90, category: "cards", condition: "NM", images: ["images/muktag.jpg"], maxQty: 1 },
+  { name: "Dialga Movie Commemoration Promo", price: 1400, category: "cards", condition: "NM-", images: ["images/dialga2.jpg"], maxQty: 1 },
   { name: "Professor Sada's Vitality", price: 700, category: "cards", condition: "NM", images: ["images/proff.jpg"], maxQty: 1 },
   { name: "Giratina Holo DP Japanese", price: 1700, category: "cards", condition: "NM", images: ["images/giratina1.jpg"], maxQty: 1 },
-  { name: "Greninja & Zoroark GX Tag Team", price: 1200, category: "cards", condition: "NM", images: ["images/greytag1.jpg"], maxQty: 1 },
+  { name: "Greninja & Zoroark GX Tag Team", price: 1200, category: "cards", condition: "NM", images: ["images/greytag1.jpg", "images/greytag2.jpg"], maxQty: 1 },
   { name: "Pikachu GG30/GG70 Crown Zenith", price: 2500, category: "cards", condition: "NM", images: ["images/pika1.jpg"], maxQty: 1 },
   { name: "Pikachu & Zekrom GX Tag Team", price: 2800, category: "cards", condition: "NM", images: ["images/pikatag.jpg"], maxQty: 1 },
   { name: "Night Stretcher SR JP", price: 500, category: "cards", condition: "NM", images: ["images/stretcher1.jpg"], maxQty: 1 },
   { name: "Hoopa EX Legendary Shine JP", price: 1800, category: "cards", condition: "NM", images: ["images/hoopa2.jpg"], maxQty: 1 },
-  { name: "Mega Sableye & Tyranitar GX", price: 700, category: "cards", condition: "NM", images: ["images/sabletag1.jpg"], maxQty: 1 },
+  { name: "Mega Sableye & Tyranitar GX", price: 700, category: "cards", condition: "NM", images: ["images/sabletag1.jpg", "images/sabletag2.jpg"], maxQty: 1 },
   { name: "Alakazam EX 1st Edition JP", price: 900, category: "cards", condition: "NM", images: ["images/alakazamex.jpg"], maxQty: 1 },
-  { name: "Deoxys Holo 1st Edition DP JP", price: 2000, category: "cards", condition: "NM", images: ["images/deoxys.jpg"], maxQty: 1 },
+  { name: "Deoxys Holo 1st Edition DP JP", price: 2000, category: "cards", condition: "NM-", images: ["images/deoxys.jpg"], maxQty: 1 },
   { name: "Vulpix Art Rare 067/063 JP", price: 500, category: "cards", condition: "NM", images: ["images/vulpixar.jpg"], maxQty: 1 },
-  { name: "Cresselia 1st Ed DP Holo", price: 2000, category: "cards", condition: "NM", images: ["images/cresselia1.jpg"], maxQty: 1 },
-  { name: "Dialga LV. X 1st Edition JP", price: 4500, category: "cards", condition: "NM", images: ["images/dialga1.jpg"], maxQty: 1 },
-  { name: "Porygon Holo 1st Ed DP JP", price: 1800, category: "cards", condition: "NM", images: ["images/porygon1.jpg"], maxQty: 1 },
+  { name: "Cresselia 1st Ed DP Holo", price: 2000, category: "cards", condition: "NM-", images: ["images/cresselia1.jpg", "images/cresselia2.jpg"], maxQty: 1 },
+  { name: "Dialga LV. X 1st Edition JP", price: 4500, category: "cards", condition: "NM-", images: ["images/dialga1.jpg"], maxQty: 1 },
+  { name: "Porygon Holo 1st Ed DP JP", price: 1800, category: "cards", condition: "NM-", images: ["images/porygon1.jpg"], maxQty: 1 },
   { name: "Togekiss Ancient Trait XY JP", price: 620, category: "cards", condition: "NM", images: ["images/togekiss.jpg"], maxQty: 1 },
   { name: "Hoopa EX Best of XY JP", price: 1000, category: "cards", condition: "NM", images: ["images/hoopa1.jpg"], maxQty: 1 },
   { name: "Turtonator Get Challenge Promo", price: 400, category: "cards", condition: "NM", images: ["images/turtonator.jpg"], maxQty: 1 },
@@ -151,37 +132,49 @@ const products = [
   { name: "Ducklett BW-P Gym Promo JP", price: 600, category: "cards", condition: "NM", images: ["images/duckstamp.jpg"], maxQty: 1 },
   { name: "Mothim Holo 1st Edition JP", price: 599, category: "cards", condition: "NM", images: ["images/mothim.jpg"], maxQty: 1 },
   { name: "Mabosstiff ex Gym Holo JP", price: 350, category: "cards", condition: "NM", images: ["images/mabosstiff.jpg"], maxQty: 1 },
-  { name: "Inteleon VMAX Alternate Art", price: 3800, category: "cards", condition: "NM", images: ["images/inteleon1.jpg"], maxQty: 1 },
+  { name: "Inteleon VMAX Alternate Art", price: 3800, category: "cards", condition: "NM", images: ["images/inteleon1.jpg", "images/inteleon2.jpg"], maxQty: 1 },
   { name: "Marnie Rainbow Rare Secret", price: 2000, category: "cards", condition: "NM", images: ["images/marnie1.jpg"], maxQty: 1 },
-  { name: "Minccino Black Bolt Holo JP", price: 900, category: "cards", condition: "NM", images: ["images/minccino1.jpg"], maxQty: 1 },
-  { name: "Morpeko V-Union Set Promo", price: 1100, category: "cards", condition: "NM", images: ["images/morpeko1.jpg"], maxQty: 1 },
-  { name: "Arceus Holo LV.X 1st Ed JP", price: 3500, category: "cards", condition: "NM", images: ["images/arceus1.jpg"], maxQty: 1 },
+  { name: "Minccino Black Bolt Holo JP", price: 900, category: "cards", condition: "NM", images: ["images/minccino1.jpg", "images/minccino2.jpg"], maxQty: 1 },
+  { name: "Morpeko V-Union Set Promo", price: 1100, category: "cards", condition: "NM", images: ["images/morpeko1.jpg", "images/morpeko2.jpg", "images/morpeko3.jpg", "images/morpeko4.jpg"], maxQty: 1 },
+  { name: "Arceus Holo LV.X 1st Ed JP", price: 3500, category: "cards", condition: "NM-", images: ["images/arceus1.jpg"], maxQty: 1 },
   { name: "Urshifu V 158/125 Chinese", price: 900, category: "cards", condition: "NM", images: ["images/urshifu1.jpg"], maxQty: 1 },
-  { name: "Mega Pidgeot-EX XY Evolutions", price: 2000, category: "cards", condition: "NM", images: ["images/megapidgeot.jpg"], maxQty: 1 },
+  { name: "Mega Pidgeot-EX XY Evolutions", price: 2000, category: "cards", condition: "NM-", images: ["images/megapidgeot.jpg"], maxQty: 1 },
   { name: "Ice Rider Calyrex Sealed Promo", price: 1200, category: "cards", condition: "NM", images: ["images/calyrex.jpg"], maxQty: 1 },
-  { name: "Battle Reporter Full Art", price: 2100, category: "cards", condition: "NM", images: ["images/battlereporter.jpg"], maxQty: 1 },
-  { name: "Darkrai Holo Movie Promo JP", price: 1500, category: "cards", condition: "NM", images: ["images/darkrai.jpg"], maxQty: 1 },
+  { name: "Battle Reporter Full Art", price: 2100, category: "cards", condition: "NM-", images: ["images/battlereporter.jpg"], maxQty: 1 },
+  { name: "Darkrai Holo Movie Promo JP", price: 1500, category: "cards", condition: "NM-", images: ["images/darkrai.jpg"], maxQty: 1 },
   { name: "Rayquaza GX Tag All Stars JP", price: 849, category: "cards", condition: "NM", images: ["images/rayquaza.jpg"], maxQty: 1 },
-  { name: "Genesect EX Plasma Blast Holo", price: 2600, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg"], maxQty: 1 }
+  { name: "Genesect EX Plasma Blast Holo", price: 2600, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg", "images/gensectholo2.jpg"], maxQty: 1 }
 ];
 
+let currentCategory = 'all';
+let itemsToShow = 12;
 let cart = [];
 
-function loadProducts(list = products) {
+function loadProducts() {
+    let filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
+    let displayList = filtered.slice(0, itemsToShow);
     let html = "";
-    list.forEach((p) => {
+
+    displayList.forEach((p) => {
         const realIdx = products.indexOf(p);
         const isCard = p.category === 'cards';
-        const badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
-        const stockInfo = (!isCard) ? `<div class="stock-tag">Stock: ${p.maxQty} avail.</div>` : '';
-        const qtyBox = (!isCard) ? `<div class="qty-area"><input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
+        
+        let badgeHtml = "";
+        if(isCard) {
+            badgeHtml = p.condition === "NM-" 
+                ? `<div class="badge nm-minus">✨ NM-</div>` 
+                : `<div class="badge nm-plain">NM</div>`;
+        }
+
+        const stockTag = !isCard ? `<div style="color:#2ecc71; font-size:0.8rem; font-weight:bold;">Stock: ${p.maxQty}</div>` : '';
+        const qtyBox = !isCard ? `<input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}">` : '';
 
         html += `
         <div class="product">
             <div>
-                ${badge}
+                ${badgeHtml}
                 <img src="${p.images[0]}" onclick="openProduct(${realIdx})">
-                ${stockInfo}
+                ${stockTag}
                 <h4>${p.name}</h4>
                 <p class="price-tag">₹${p.price}</p>
                 ${qtyBox}
@@ -190,33 +183,40 @@ function loadProducts(list = products) {
         </div>`;
     });
     document.getElementById("productList").innerHTML = html;
+    document.getElementById("pagination").style.display = (itemsToShow >= filtered.length) ? "none" : "block";
 }
 
 function openProduct(index) {
     const p = products[index];
     const modal = document.getElementById("productModal");
     const body = document.getElementById("modalBody");
-    const badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
+    
+    let thumbs = p.images.map((img, i) => `<img src="${img}" onclick="updateModalImg('${img}', this)" class="${i==0?'active':''}">`).join('');
 
     body.innerHTML = `
-        <div style="flex:1; min-width:300px; display:flex; flex-direction:column; align-items:center;">
+        <div>
             <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-                <img src="${p.images[0]}" id="zoomImg">
+                <img src="${p.images[0]}" id="mainModalImg">
             </div>
+            <div class="thumb-strip">${thumbs}</div>
         </div>
-        <div style="flex:1; min-width:300px; color:white;">
-            ${badge}
-            <h2 style="margin-top:10px;">${p.name}</h2>
-            <p class="price-tag" style="font-size:2.8rem;">₹${p.price}</p>
-            <p style="color:#aaa;">Hover the image to inspect the card quality.</p>
-            <button class="buy" style="height:60px; font-size:1.3rem;" onclick="addToCartModal(${index}); closeModal()">Add to Cart</button>
+        <div>
+            <h2>${p.name}</h2>
+            <p class="price-tag" style="font-size:2.5rem;">₹${p.price}</p>
+            <p style="color:#aaa;">Move mouse over image to inspect condition.</p>
+            <button class="buy" style="height:50px;" onclick="addToCartModal(${index}); closeModal()">Add to Cart</button>
         </div>
     `;
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
 }
 
-// True Coordinate Zoom Logic
+function updateModalImg(src, thumb) {
+    document.getElementById('mainModalImg').src = src;
+    document.querySelectorAll('.thumb-strip img').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+
 function handleZoom(e) {
     const box = e.currentTarget;
     const img = box.querySelector('img');
@@ -226,55 +226,33 @@ function handleZoom(e) {
     img.style.transform = "scale(2.5)";
 }
 
-function resetZoom(e) {
-    const img = e.currentTarget.querySelector('img');
-    img.style.transform = "scale(1)";
-}
-
-function closeModal() {
-    document.getElementById("productModal").style.display = "none";
-    document.body.style.overflow = "auto";
-}
-
-function filterProducts(cat) {
-    loadProducts(cat === 'all' ? products : products.filter(p => p.category === cat));
-}
+function resetZoom(e) { e.currentTarget.querySelector('img').style.transform = "scale(1)"; }
+function closeModal() { document.getElementById("productModal").style.display = "none"; document.body.style.overflow = "auto"; }
+function changeCategory(cat) { currentCategory = cat; itemsToShow = 12; loadProducts(); }
+function loadNextPage() { itemsToShow += 12; loadProducts(); }
 
 function addToCart(idx) {
     const p = products[idx];
-    const qtyInput = document.getElementById(`qty-${idx}`);
-    let qty = qtyInput ? parseInt(qtyInput.value) : 1;
-
-    // Validation Popup
-    if (qty > p.maxQty) {
-        alert(`❌ Error: You are ordering ${qty} items, but we only have ${p.maxQty} in stock.`);
-        return;
-    }
-
-    for(let i=0; i<qty; i++) { cart.push(p); }
+    const input = document.getElementById(`qty-${idx}`);
+    let qty = input ? parseInt(input.value) : 1;
+    if(qty > p.maxQty) return alert("Not enough stock!");
+    for(let i=0; i<qty; i++) cart.push(p);
     renderCart();
 }
 
-function addToCartModal(idx) {
-    cart.push(products[idx]);
-    renderCart();
-}
+function addToCartModal(idx) { cart.push(products[idx]); renderCart(); }
 
 function renderCart() {
-    let total = cart.reduce((sum, item) => sum + item.price, 0);
+    let total = cart.reduce((s, i) => s + i.price, 0);
     document.getElementById("cartItems").innerHTML = cart.length === 0 ? "Cart is empty" : 
-        cart.map((i, index) => `<p>✅ ${i.name} - ₹${i.price} <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;">[X]</button></p>`).join("") + `<hr><b>Total: ₹${total}</b>`;
+        cart.map((i, idx) => `<p>✅ ${i.name} - ₹${i.price} <span onclick="remove(${idx})" style="color:red;cursor:pointer;">[X]</span></p>`).join("") + `<hr>Total: ₹${total}`;
 }
 
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    renderCart();
-}
+function remove(idx) { cart.splice(idx, 1); renderCart(); }
 
 function checkout() {
-    if(cart.length === 0) return alert("Your cart is empty!");
-    let total = cart.reduce((s, i) => s + i.price, 0);
-    let text = "PokeIndia TCG Order Request:\n" + cart.map(i => `- ${i.name}`).join("\n") + "\n\nTotal: ₹" + total;
+    if(!cart.length) return;
+    let text = "PokeIndia Order:\n" + cart.map(i => `- ${i.name}`).join("\n") + "\nTotal: ₹" + cart.reduce((s,i)=>s+i.price,0);
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 
