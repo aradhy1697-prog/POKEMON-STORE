@@ -20,10 +20,10 @@
             margin: 0; padding: 20px; min-height: 100vh;
         }
 
-        .header { text-align: center; padding: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .header { text-align: center; padding: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .header h1 { color: var(--primary); font-size: 2.5rem; text-transform: uppercase; margin: 0; }
 
-        .nav-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .nav-buttons { display: flex; justify-content: center; gap: 10px; margin: 30px 0; flex-wrap: wrap; }
         .nav-buttons button { padding: 10px 20px; cursor: pointer; border: 1px solid var(--secondary); border-radius: 20px; background: transparent; color: white; transition: 0.3s; font-weight: bold; }
         .nav-buttons button:hover { background: var(--secondary); }
 
@@ -37,32 +37,28 @@
         .product:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); }
         .product img { width: 100%; border-radius: 10px; cursor: pointer; height: 250px; object-fit: contain; background: #111; margin-bottom: 15px; }
 
-        /* The Badge - Only shows if condition is exactly NM- */
         .nm-badge { 
             background: linear-gradient(90deg, #e67e22, #f39c12); color: white; padding: 4px 12px; border-radius: 50px; 
-            font-size: 0.75rem; font-weight: bold; display: inline-block; margin: 0 auto 10px auto;
+            font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 10px;
         }
 
         .product h4 { font-size: 1rem; margin: 10px 0; height: 40px; overflow: hidden; }
         .price-tag { font-size: 1.5rem; color: var(--accent); font-weight: bold; margin: 10px 0; }
-        .qty-input { width: 50px; background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; margin-bottom: 10px; }
+        .qty-input { width: 60px; background: #222; color: white; border: 1px solid #444; padding: 5px; border-radius: 5px; margin-bottom: 10px; text-align: center; }
 
         button.buy { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button.buy:hover { background: #ff9f43; }
 
         #productModal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
-        .modal-content { 
-            background: #111; margin: 5% auto; padding: 30px; width: 90%; max-width: 900px; 
-            border-radius: 20px; position: relative; display: flex; flex-wrap: wrap; gap: 30px; border: 1px solid #333;
-        }
-        .close { position: absolute; right: 20px; top: 10px; font-size: 45px; color: white; cursor: pointer; z-index: 10000; }
+        .modal-content { background: #111; margin: 5% auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 20px; position: relative; display: flex; flex-wrap: wrap; gap: 30px; border: 1px solid #333; }
+        .close { position: absolute; right: 20px; top: 10px; font-size: 45px; color: white; cursor: pointer; }
         
         .zoom-box { width: 100%; max-width: 400px; height: 500px; overflow: hidden; border-radius: 15px; background: #000; }
         .zoom-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; }
         .zoom-box:hover img { transform: scale(1.8); cursor: zoom-in; }
 
         .cart-section { max-width: 1200px; margin: 40px auto; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .checkout-btn { background: #25d366; color: white; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 1.3rem; }
+        .checkout-btn { background: #25d366; color: white; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 1.3rem; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -94,36 +90,65 @@
 </div>
 
 <script>
-let products = [
-  // BOXES
-  { name: "Paradise Dragona Box (Korean)", price: 6000, category: "booster", images: ["./images/paradise1.jpg"], maxQty: 1 },
-  { name: "White Flare Booster Box (Korean)", price: 6500, category: "booster", images: ["./images/whiteflare1.jpg"], maxQty: 1 },
-  { name: "Korean Lost Abyss Booster Box", price: 7500, category: "booster", images: ["./images/lostabyss1.jpg"], maxQty: 1 },
+const products = [
+  // 3 BOOSTER BOXES
+  { name: "Paradise Dragona Box (Korean)", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
+  { name: "White Flare Booster Box (Korean)", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
+  { name: "Korean Lost Abyss Booster Box", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
   
-  // PACKS
-  { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["./images/evolvingsky.jpg"], maxQty: 2 },
-  { name: "151 Pack (Japanese)", price: 650, category: "packs", images: ["./images/151pack.jpg"], maxQty: 10 },
-  { name: "Shiny Treasure ex Pack (Japanese)", price: 500, category: "packs", images: ["./images/shinyex.jpg"], maxQty: 10 },
-  { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["./images/mask1.jpg"], maxQty: 12 },
-  { name: "Ruler of Black Flame (Korean)", price: 350, category: "packs", images: ["./images/ruler1.jpg"], maxQty: 10 },
-  { name: "Wild Force Pack (Korean)", price: 300, category: "packs", images: ["./images/wild1.jpg"], maxQty: 15 },
-  { name: "Cyber Judge Pack (Korean)", price: 300, category: "packs", images: ["./images/cyber1.jpg"], maxQty: 15 },
-  { name: "Night Wanderer Pack (Korean)", price: 300, category: "packs", images: ["./images/night1.jpg"], maxQty: 20 },
-  { name: "Crimson Haze Pack (Korean)", price: 300, category: "packs", images: ["./images/crimson1.jpg"], maxQty: 18 },
-  { name: "Ancient Roar Pack (Korean)", price: 300, category: "packs", images: ["./images/ancient1.jpg"], maxQty: 10 },
-  { name: "Future Flash Pack (Korean)", price: 300, category: "packs", images: ["./images/future1.jpg"], maxQty: 10 },
+  // 12 PACKS (YOUR EXACT LIST)
+  { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
+  { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
+  { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 1 },
+  { name: "Crimson Haze Pack (Japanese)", price: 270, category: "packs", images: ["images/crimson.jpg"], maxQty: 1 },
+  { name: "Super Electric Breaker Pack (Japanese)", price: 450, category: "packs", images: ["images/electricbreaker.jpg"], maxQty: 1 },
+  { name: "Ruler of the Black Flame Pack (Korean)", price: 230, category: "packs", images: ["images/robf.jpg"], maxQty: 1 },
+  { name: "Mega Brave Pack (Japanese) – M1L", price: 330, category: "packs", images: ["images/megabrave.jpg"], maxQty: 3 },
+  { name: "Pokemon Sword Pack (Japanese) – S1W", price: 1500, category: "packs", images: ["images/swordv.jpg"], maxQty: 3 },
+  { name: "2021 McDonald’s 25th Anniv. Pack (English)", price: 1200, category: "packs", images: ["images/mcdonald.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 8 (Japanese)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 1 },
+  { name: "Gym Promo Pack Vol. 7 (Japanese)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 1 },
+  { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 },
 
-  // SINGLE CARDS (Condition Logic Fixed)
-  { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM-", images: ["./images/manphy1.jpg"], maxQty: 1 },
-  { name: "Arceus Black Star Promo Japanese", price: 600, category: "cards", condition: "NM-", images: ["./images/arceus3.jpg"], maxQty: 1 },
-  { name: "Dialga Movie Commemoration Promo", price: 1400, category: "cards", condition: "NM", images: ["./images/dialga2.jpg"], maxQty: 1 },
-  { name: "Professor Sada's Vitality", price: 700, category: "cards", condition: "NM", images: ["./images/proff.jpg"], maxQty: 1 },
-  { name: "Giratina Holo DP Japanese", price: 1700, category: "cards", condition: "NM", images: ["./images/giratina1.jpg"], maxQty: 1 },
-  { name: "Pikachu GG30/GG70 Crown Zenith", price: 2500, category: "cards", condition: "NM", images: ["./images/pika1.jpg"], maxQty: 1 },
-  { name: "Night Stretcher SR JP", price: 500, category: "cards", condition: "NM", images: ["./images/stretcher1.jpg"], maxQty: 1 },
-  { name: "Mega Pidgeot-EX XY Evolutions", price: 2000, category: "cards", condition: "NM", images: ["./images/megapidgeot.jpg"], maxQty: 1 },
-  { name: "Rayquaza GX Tag All Stars JP", price: 849, category: "cards", condition: "NM", images: ["./images/rayquaza.jpg"], maxQty: 1 },
-  { name: "Marnie Rainbow Rare Secret", price: 2000, category: "cards", condition: "NM", images: ["./images/marnie1.jpg"], maxQty: 1 }
+  // 38 SINGLE CARDS
+  { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM-", images: ["images/manphy1.jpg"], maxQty: 1 },
+  { name: "Arceus Black Star Promo Japanese", price: 600, category: "cards", condition: "NM-", images: ["images/arceus3.jpg"], maxQty: 1 },
+  { name: "Muk & Alolan Muk GX Tag Team", price: 900, category: "cards", condition: "NM", images: ["images/muktag.jpg"], maxQty: 1 },
+  { name: "Dialga Movie Commemoration Promo", price: 1400, category: "cards", condition: "NM", images: ["images/dialga2.jpg"], maxQty: 1 },
+  { name: "Professor Sada's Vitality", price: 700, category: "cards", condition: "NM", images: ["images/proff.jpg"], maxQty: 1 },
+  { name: "Giratina Holo DP Japanese", price: 1700, category: "cards", condition: "NM", images: ["images/giratina1.jpg"], maxQty: 1 },
+  { name: "Greninja & Zoroark GX Tag Team", price: 1200, category: "cards", condition: "NM", images: ["images/greytag1.jpg"], maxQty: 1 },
+  { name: "Pikachu GG30/GG70 Crown Zenith", price: 2500, category: "cards", condition: "NM", images: ["images/pika1.jpg"], maxQty: 1 },
+  { name: "Pikachu & Zekrom GX Tag Team", price: 2800, category: "cards", condition: "NM", images: ["images/pikatag.jpg"], maxQty: 1 },
+  { name: "Night Stretcher SR JP", price: 500, category: "cards", condition: "NM", images: ["images/stretcher1.jpg"], maxQty: 1 },
+  { name: "Hoopa EX Legendary Shine JP", price: 1800, category: "cards", condition: "NM", images: ["images/hoopa2.jpg"], maxQty: 1 },
+  { name: "Mega Sableye & Tyranitar GX", price: 700, category: "cards", condition: "NM", images: ["images/sabletag1.jpg"], maxQty: 1 },
+  { name: "Alakazam EX 1st Edition JP", price: 900, category: "cards", condition: "NM", images: ["images/alakazamex.jpg"], maxQty: 1 },
+  { name: "Deoxys Holo 1st Edition DP JP", price: 2000, category: "cards", condition: "NM", images: ["images/deoxys.jpg"], maxQty: 1 },
+  { name: "Vulpix Art Rare 067/063 JP", price: 500, category: "cards", condition: "NM", images: ["images/vulpixar.jpg"], maxQty: 1 },
+  { name: "Cresselia 1st Ed DP Holo", price: 2000, category: "cards", condition: "NM", images: ["images/cresselia1.jpg"], maxQty: 1 },
+  { name: "Dialga LV. X 1st Edition JP", price: 4500, category: "cards", condition: "NM", images: ["images/dialga1.jpg"], maxQty: 1 },
+  { name: "Porygon Holo 1st Ed DP JP", price: 1800, category: "cards", condition: "NM", images: ["images/porygon1.jpg"], maxQty: 1 },
+  { name: "Togekiss Ancient Trait XY JP", price: 620, category: "cards", condition: "NM", images: ["images/togekiss.jpg"], maxQty: 1 },
+  { name: "Hoopa EX Best of XY JP", price: 1000, category: "cards", condition: "NM", images: ["images/hoopa1.jpg"], maxQty: 1 },
+  { name: "Turtonator Get Challenge Promo", price: 400, category: "cards", condition: "NM", images: ["images/turtonator.jpg"], maxQty: 1 },
+  { name: "Porygon-Z Bandit Ring JP", price: 850, category: "cards", condition: "NM", images: ["images/porygon.jpg"], maxQty: 1 },
+  { name: "Galarian Zapdos SWSH Promo", price: 500, category: "cards", condition: "NM", images: ["images/galarzapdos.jpg"], maxQty: 1 },
+  { name: "Ducklett BW-P Gym Promo JP", price: 600, category: "cards", condition: "NM", images: ["images/duckstamp.jpg"], maxQty: 1 },
+  { name: "Mothim Holo 1st Edition JP", price: 599, category: "cards", condition: "NM", images: ["images/mothim.jpg"], maxQty: 1 },
+  { name: "Mabosstiff ex Gym Holo JP", price: 350, category: "cards", condition: "NM", images: ["images/mabosstiff.jpg"], maxQty: 1 },
+  { name: "Inteleon VMAX Alternate Art", price: 3800, category: "cards", condition: "NM", images: ["images/inteleon1.jpg"], maxQty: 1 },
+  { name: "Marnie Rainbow Rare Secret", price: 2000, category: "cards", condition: "NM", images: ["images/marnie1.jpg"], maxQty: 1 },
+  { name: "Minccino Black Bolt Holo JP", price: 900, category: "cards", condition: "NM", images: ["images/minccino1.jpg"], maxQty: 1 },
+  { name: "Morpeko V-Union Set Promo", price: 1100, category: "cards", condition: "NM", images: ["images/morpeko1.jpg"], maxQty: 1 },
+  { name: "Arceus Holo LV.X 1st Ed JP", price: 3500, category: "cards", condition: "NM", images: ["images/arceus1.jpg"], maxQty: 1 },
+  { name: "Urshifu V 158/125 Chinese", price: 900, category: "cards", condition: "NM", images: ["images/urshifu1.jpg"], maxQty: 1 },
+  { name: "Mega Pidgeot-EX XY Evolutions", price: 2000, category: "cards", condition: "NM", images: ["images/megapidgeot.jpg"], maxQty: 1 },
+  { name: "Ice Rider Calyrex Sealed Promo", price: 1200, category: "cards", condition: "NM", images: ["images/calyrex.jpg"], maxQty: 1 },
+  { name: "Battle Reporter Full Art", price: 2100, category: "cards", condition: "NM", images: ["images/battlereporter.jpg"], maxQty: 1 },
+  { name: "Darkrai Holo Movie Promo JP", price: 1500, category: "cards", condition: "NM", images: ["images/darkrai.jpg"], maxQty: 1 },
+  { name: "Rayquaza GX Tag All Stars JP", price: 849, category: "cards", condition: "NM", images: ["images/rayquaza.jpg"], maxQty: 1 },
+  { name: "Genesect EX Plasma Blast Holo", price: 2600, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg"], maxQty: 1 }
 ];
 
 let cart = [];
@@ -131,19 +156,16 @@ let cart = [];
 function loadProducts(list = products) {
     let html = "";
     list.forEach((p) => {
-        let realIdx = products.indexOf(p);
-        let isCard = p.category === 'cards';
-        
-        // ONLY SHOW BADGE IF CONDITION IS NM- (NOT NM)
-        let badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
-        
-        let qtyBox = (!isCard) ? `<input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}">` : `<input type="hidden" id="qty-${realIdx}" value="1">`;
+        const realIdx = products.indexOf(p);
+        const isCard = p.category === 'cards';
+        const badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
+        const qtyBox = (!isCard) ? `<input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}">` : '';
 
         html += `
         <div class="product">
             <div>
                 ${badge}
-                <img src="${p.images[0]}" onclick="openProduct(${realIdx})">
+                <img src="${p.images[0]}" onclick="openProduct(${realIdx})" onerror="this.src='https://placehold.co/400x600?text=Image+Not+Found'">
                 <h4>${p.name}</h4>
                 <p class="price-tag">₹${p.price}</p>
                 ${qtyBox}
@@ -158,11 +180,11 @@ function openProduct(index) {
     const p = products[index];
     const modal = document.getElementById("productModal");
     const body = document.getElementById("modalBody");
-    let badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
+    const badge = (p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
 
     body.innerHTML = `
         <div style="flex:1; min-width:300px; display:flex; flex-direction:column; align-items:center;">
-            <div class="zoom-box"><img src="${p.images[0]}"></div>
+            <div class="zoom-box"><img src="${p.images[0]}" onerror="this.src='https://placehold.co/400x600?text=Image+Not+Found'"></div>
         </div>
         <div style="flex:1; min-width:300px; color:white;">
             ${badge}
@@ -185,7 +207,8 @@ function filterProducts(cat) {
 }
 
 function addToCart(idx) {
-    let qty = parseInt(document.getElementById(`qty-${idx}`).value);
+    const qtyInput = document.getElementById(`qty-${idx}`);
+    let qty = qtyInput ? parseInt(qtyInput.value) : 1;
     for(let i=0; i<qty; i++) { cart.push(products[idx]); }
     renderCart();
 }
@@ -198,7 +221,12 @@ function addToCartModal(idx) {
 function renderCart() {
     let total = cart.reduce((sum, item) => sum + item.price, 0);
     document.getElementById("cartItems").innerHTML = cart.length === 0 ? "Cart is empty" : 
-        cart.map(i => `<p>✅ ${i.name} - ₹${i.price}</p>`).join("") + `<hr><b>Total: ₹${total}</b>`;
+        cart.map((i, index) => `<p>✅ ${i.name} - ₹${i.price} <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;">[X]</button></p>`).join("") + `<hr><b>Total: ₹${total}</b>`;
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
 }
 
 function checkout() {
