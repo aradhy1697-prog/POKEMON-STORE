@@ -148,17 +148,31 @@ function loadProducts(list = products) {
 
 function filterProducts(cat) { loadProducts(cat === "all" ? products : products.filter(p => p.category === cat)); }
 
+let currentImgIndex = 0;
+
 function openProduct(index) {
     const p = products[index];
     const modal = document.getElementById("productModal");
     const content = document.getElementById("modalBody");
+    currentImgIndex = 0; 
     currentScale = 2.5;
+
     let conditionHTML = p.condition === "NM" ? `<div class="nm-badge">✨ NEAR MINT (NM)</div>` : '';
     let stockDisplay = (p.category !== 'cards') ? `<p style="color:#7f8c8d;"><b>Available Stock:</b> ${p.maxQty}</p>` : '';
+    
+    // Check if there are multiple images
+    let navButtons = p.images.length > 1 ? `
+        <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+            <button onclick="changeModalImg(${index}, -1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:5px; font-weight:bold;">◀ Prev</button>
+            <button onclick="changeModalImg(${index}, 1)" style="padding:10px 20px; cursor:pointer; background:#3c5aa6; color:white; border:none; border-radius:5px; font-weight:bold;">Next ▶</button>
+        </div>` : '';
 
     content.innerHTML = `
-        <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom()" onwheel="scrollZoom(event)">
-            <img src="${p.images[0]}" id="zoom-img">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="zoom-container" onmousemove="zoom(event)" onmouseleave="resetZoom()" onwheel="scrollZoom(event)">
+                <img src="${p.images[0]}" id="zoom-img">
+            </div>
+            ${navButtons}
         </div>
         <div style="flex:1; padding-top: 10px; min-width: 300px;">
             ${conditionHTML}
@@ -348,5 +362,6 @@ loadProducts();
 </script>
 </body>
 </html>
+
 
 
