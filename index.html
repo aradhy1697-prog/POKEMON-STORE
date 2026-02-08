@@ -188,23 +188,26 @@ function loadProducts(list = products) {
     list.forEach((p) => {
         let realIndex = products.indexOf(p);
         let isSingleCard = (p.category === 'cards');
+        
+        // This line checks: IF the product has a condition AND that condition is "NM-", then show the badge.
+        let badgeHTML = (p.condition && p.condition === "NM-") ? `<div class="nm-badge">✨ NM-</div>` : '';
+        
         html += `
         <div class="product">
+            ${badgeHTML}
             <img src="${p.images[0]}" loading="lazy" onclick="openProduct(${realIndex})">
             <div>
                 <h4>${p.name}</h4>
-                ${p.condition === 'NM-' ? '<div class="nm-badge">✨ NM-</div><br>' : ''}
-                ${!isSingleCard ? `<div class="stock-tag">Stock: ${p.maxQty}</div>` : ''}
-                <p style="font-weight:bold; color:#e67e22;">₹${p.price}</p>
+                ${!isSingleCard ? `<div class="stock-tag" style="color:white; background:rgba(255,255,255,0.1); padding:3px 8px; border-radius:5px; font-size:0.8rem;">Stock: ${p.maxQty}</div>` : ''}
+                <p class="price-tag">₹${p.price}</p>
                 ${isSingleCard ? `<input type="hidden" id="qty-${realIndex}" value="1">` : 
-                `<input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:40px; margin-bottom:10px;">`}
+                `<input type="number" id="qty-${realIndex}" value="1" min="1" max="${p.maxQty}" style="width:45px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; padding: 5px; margin-bottom: 10px;">`}
             </div>
             <button class="buy" onclick="addToCart(${realIndex})">Add to Cart</button>
         </div>`;
     });
     document.getElementById("productList").innerHTML = html;
 }
-
 function filterProducts(cat) { loadProducts(cat === "all" ? products : products.filter(p => p.category === cat)); }
 
 function openProduct(index) {
@@ -278,4 +281,5 @@ loadProducts();
 </script>
 </body>
 </html>
+
 
