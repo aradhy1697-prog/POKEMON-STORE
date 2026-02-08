@@ -184,7 +184,12 @@ function openProduct(index) {
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
 }
-
+function changeModalImg(productIndex, step) {
+    const p = products[productIndex];
+    currentImgIndex = (currentImgIndex + step + p.images.length) % p.images.length;
+    document.getElementById("zoom-img").src = p.images[currentImgIndex];
+    resetZoom();
+}
 function zoom(e) {
     const img = document.getElementById("zoom-img");
     const container = e.currentTarget;
@@ -362,6 +367,7 @@ loadProducts();
 </script>
 </body>
 </html>
+
 
 
 
