@@ -31,7 +31,7 @@
 
         /* Floating Cart Icon */
         .cart-icon-container {
-            position: fixed; top: 20px; right: 20px; z-index: 1000; cursor: pointer;
+            position: fixed; top: 60px; right: 20px; z-index: 1000; cursor: pointer;
             background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 50%;
             border: 1px solid var(--neon-btn); backdrop-filter: blur(10px);
             box-shadow: 0 0 15px var(--neon-btn);
@@ -131,6 +131,11 @@ button.buy:hover {
     position: sticky;
     top: 0;
     z-index: 1001;
+    height: 40px; /* Added */
+    display: flex; /* Added */
+    align-items: center; /* Added */
+    justify-content: center; /* Added */
+}
 }
     </style>
 </head>
@@ -394,6 +399,7 @@ document.addEventListener('touchstart', function(e) {
 </script>
 </body>
 </html>
+
 
 
 
