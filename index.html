@@ -294,6 +294,7 @@ function openProduct(index) {
     `;
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
+    window.history.pushState({modal: true}, "");
 }
 
 function addToCart(idx) {
@@ -366,3 +367,4 @@ loadProducts();
 </script>
 </body>
 </html>
+
