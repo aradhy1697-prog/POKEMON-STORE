@@ -892,6 +892,7 @@ function checkout() {
                  "\nCOD Total (₹250 ship): ₹" + (subtotal + 250) +
                  "\n\nPlease let me know your GPay details or if I should go with COD!";
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
+window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
 </script>
 
@@ -911,7 +912,6 @@ function checkout() {
 <script>
     loadProducts();
 
-    // This makes zoom work on mobile taps
     document.addEventListener('touchstart', function(e) {
         if (e.target.closest('.image-zoom-container')) {
             handleZoom(e);
@@ -920,7 +920,6 @@ function checkout() {
 </script>
 </body>
 </html>
-
 
 
 
