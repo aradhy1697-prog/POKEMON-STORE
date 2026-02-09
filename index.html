@@ -19,33 +19,30 @@
 
         body { font-family: 'Poppins', sans-serif; background: var(--bg-black); color: var(--text); margin: 0; padding: 20px; }
         
-        .header { text-align: center; padding: 40px; }
-        .header h1 {
+        .header { text-align: center; padding: 60px 20px 20px 20px; }
+
+.header h1 {
     font-size: 3.5rem;
     font-weight: 900;
     text-transform: uppercase;
-    background: linear-gradient(to bottom, #fff 20%, var(--neon-blue) 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.8));
-    letter-spacing: -2px;
-    margin-top: 10px;
     font-family: 'Orbitron', sans-serif;
+    color: #fff;
+    /* This makes the glow do the heavy lifting so the text stays visible */
+    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+    margin: 0;
     animation: glitch 3s infinite;
 }
 
 @keyframes glitch {
-    0% { transform: skew(0deg); }
-    20% { transform: skew(-1deg); filter: drop-shadow(2px 0 #ff00c1); }
-    21% { transform: skew(1deg); filter: drop-shadow(-2px 0 #00fff9); }
-    25% { transform: skew(0deg); filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.8)); }
-    100% { transform: skew(0deg); }
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; }
+    25% { transform: translate(0); }
+    100% { transform: translate(0); }
 }
-
         /* Floating Cart Icon */
         .cart-icon-container {
     position: fixed;
-    top: 45px; /* Perfect gap below the 30px COD bar */
+    top: 80px; /* Perfect gap below the 30px COD bar */
     right: 20px;
     z-index: 1000;
     cursor: pointer;
@@ -438,6 +435,7 @@ document.addEventListener('touchstart', function(e) {
 </script>
 </body>
 </html>
+
 
 
 
