@@ -116,10 +116,26 @@ button.buy:hover {
     box-shadow: 0 0 20px #ff8c00;
     transform: scale(1.02);
 }
+    
+.cod-bar {
+    background: linear-gradient(90deg, #ffcb05, #ff8800);
+    color: black;
+    text-align: center;
+    padding: 10px 5px;
+    font-weight: bold;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px #ffcb05;
+    font-size: 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
     </style>
 </head>
 <body>
-
+<div class="cod-bar">⚡ Cash on Delivery (COD) Available Pan-India ⚡</div>
 <div class="cart-icon-container" onclick="toggleCart()">
     <span style="font-size: 24px;">🛒</span>
     <div class="cart-count" id="cartCount">0</div>
@@ -378,6 +394,7 @@ document.addEventListener('touchstart', function(e) {
 </script>
 </body>
 </html>
+
 
 
 
