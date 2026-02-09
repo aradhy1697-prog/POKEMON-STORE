@@ -313,7 +313,7 @@ function toggleCart() {
     const modal = document.getElementById("cartModal");
     const list = document.getElementById("cartList");
     const total = document.getElementById("cartTotal");
-    
+    if (modal.style.display !== "block") { window.history.pushState({modal: true}, ""); }
     if(cart.length === 0) {
         list.innerHTML = "Inventory is currently empty.";
         total.innerHTML = "";
@@ -361,10 +361,16 @@ function checkout() {
                  "\n\nPlease let me know your GPay details!";
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
-
+// This tells the phone what to do when the back button is pressed
+window.onpopstate = function() {
+    closeModal(); // Closes the product view
+    document.getElementById("cartModal").style.display = "none"; // Closes the cart
+    document.body.style.overflow = "auto"; // Re-enables scrolling
+};
 // Initial Load
 loadProducts();
 </script>
 </body>
 </html>
+
 
