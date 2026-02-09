@@ -65,7 +65,34 @@
     overflow: hidden;
     border-radius: 8px;
 }
+.trust-marquee {
+    background: #000;
+    border-top: 1px solid var(--neon-blue);
+    border-bottom: 1px solid var(--neon-blue);
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 40px 0;
+}
 
+.marquee-content {
+    display: inline-block;
+    animation: walk 20s linear infinite;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-blue);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.marquee-content span {
+    margin-right: 50px; /* Space between points */
+}
+
+@keyframes walk {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
 .product-card img {
     max-width: 90%;
     max-height: 90%;
@@ -424,6 +451,20 @@ function checkout() {
                  "\n\nPlease let me know your GPay details or if I should go with COD!";
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
 }
+<div class="trust-marquee">
+    <div class="marquee-content">
+        <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
+        <span>📦 Secure Bubble-Wrap & Top-Loader Packaging</span>
+        <span>📑 Tracking ID Shared within 24 Hours of Dispatch</span>
+        <span>🚚 Reliable Pan-India Shipping</span>
+        <span>💎 Trusted by Collectors Across India</span>
+        <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
+        <span>📦 Secure Bubble-Wrap & Top-Loader Packaging</span>
+        <span>📑 Tracking ID Shared within 24 Hours of Dispatch</span>
+    </div>
+</div>
+
+<script>
 
 loadProducts();
     // This makes zoom work on mobile taps
@@ -435,6 +476,7 @@ document.addEventListener('touchstart', function(e) {
 </script>
 </body>
 </html>
+
 
 
 
