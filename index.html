@@ -19,9 +19,9 @@
 
     <script>
         // Use the keys we just put in your .env file
-        const supabaseUrl = https://tyxftjhxzypuugwbvoxf.supabase.co;
-        const supabaseKey = sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln;
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
+        const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
+        const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
 
         async function loadCards() {
             const { data, error } = await supabase.from('products').select('*');
@@ -49,3 +49,4 @@
 </body>
 
 </html>
+
