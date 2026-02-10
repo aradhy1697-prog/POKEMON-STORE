@@ -172,7 +172,8 @@ function render() {
         const badge = isCard ? (isNMMinus ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
         
         // --- MATCHING YOUR SUPABASE COLUMN NAME ---
-        const stockCount = p.maxqty || 1; 
+        // This line checks for every possible way you might have named the column
+        const stockCount = p.maxqty || p.max_qty || 1;
         
         const stockLabel = !isCard ? `<div style="color: #00f3ff; font-size: 0.8rem; margin-top: 5px; font-family: 'Orbitron';">Stock: ${stockCount} available</div>` : '';
         
@@ -246,6 +247,7 @@ fetchProducts();
 </script>
 </body>
 </html>
+
 
 
 
