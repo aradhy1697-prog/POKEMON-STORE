@@ -158,6 +158,12 @@ async function fetchProducts() {
 }
 
 function render() {
+    // Safety check: if allProducts hasn't loaded yet, don't try to render
+    if (!allProducts || allProducts.length === 0) {
+        document.getElementById("productList").innerHTML = "Loading inventory...";
+        return;
+    }
+
     let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
     let html = "";
     
@@ -166,11 +172,13 @@ function render() {
         const isNMMinus = (p.name && p.name.includes('NM-')) || p.condition === 'NM-';
         const badge = isCard ? (isNMMinus ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
         
-        // --- NEW STOCK DISPLAY LOGIC ---
-        // Checks the 'max_qty' column from your Supabase table
-        const stockCount = p.max_qty || p.maxQty || 0; 
-        const stockLabel = !isCard ? `<div style="color: #aaa; font-size: 0.7rem; margin-top: 5px; font-family: 'Orbitron';">Stock: ${stockCount} available</div>` : '';
+        // NEW: Get stock from the max_qty column we just added
+        const stockCount = p.max_qty || 1; 
         
+        // Only show "Stock" for Packs and Booster Boxes
+        const stockLabel = !isCard ? `<div style="color: #00f3ff; font-size: 0.8rem; margin-top: 5px; font-family: 'Orbitron';">Stock: ${stockCount} available</div>` : '';
+        
+        // Hide quantity box for cards (as per your rule)
         const qtyHtml = !isCard ? `
             <div style="margin-top:10px;">
                 <input type="number" id="qty-${p.id}" class="qty-input" value="1" min="1" max="${stockCount}">
@@ -189,7 +197,6 @@ function render() {
     });
     document.getElementById("productList").innerHTML = html;
 }
-
 function openProduct(id) {
     const p = allProducts.find(x => x.id === id);
     const body = document.getElementById("modalBody");
@@ -242,4 +249,5 @@ fetchProducts();
 </script>
 </body>
 </html>
+
 
