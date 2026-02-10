@@ -144,7 +144,7 @@
 </div>
 
 <script>
-const _supabase = supabase.createClient('https://tyxftjhxzypuugwbvoxf.supabase.co', 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln');
+const _supabase = supabase.createClient('https://tyxftjhxzypuugwbvoxf.supabase.co', 'YOUR_SUPABASE_ANON_KEY');
 
 let allProducts = [];
 let cart = [];
@@ -158,50 +158,36 @@ async function fetchProducts() {
 }
 
 function render() {
-    if (!allProducts || allProducts.length === 0) {
-        document.getElementById("productList").innerHTML = "No products found in database.";
-        return;
-    }
-
     let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
     let html = "";
-    
     filtered.forEach(p => {
         const isCard = p.category === 'cards';
         const isNMMinus = (p.name && p.name.includes('NM-')) || p.condition === 'NM-';
         const badge = isCard ? (isNMMinus ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
-        
-        // --- MATCHING YOUR SUPABASE COLUMN NAME ---
-        // This line checks for every possible way you might have named the column
-        const stockCount = p.maxqty || p.max_qty || 1;
-        
-        const stockLabel = !isCard ? `<div style="color: #00f3ff; font-size: 0.8rem; margin-top: 5px; font-family: 'Orbitron';">Stock: ${stockCount} available</div>` : '';
-        
-        const qtyHtml = !isCard ? `
-            <div style="margin-top:10px;">
-                <input type="number" id="qty-${p.id}" class="qty-input" value="1" min="1" max="${stockCount}">
-                ${stockLabel}
-            </div>` : '';
+        const stock = p.maxqty || p.max_qty || 1;
+        const qtyHtml = !isCard ? `<div style="margin-top:10px;"><input type="number" id="qty-${p.id}" class="qty-input" value="1" min="1" max="${stock}"><div style="color: #00f3ff; font-size: 0.7rem; margin-top: 5px; font-family: 'Orbitron';">In Stock: ${stock}</div></div>` : '';
 
         html += `
         <div class="product">
             ${badge}
             <img src="${p.image_url}" onclick="openProduct(${p.id})">
-            <h4 style="font-family:'Poppins'; margin: 10px 0;">${p.name}</h4>
+            <h4>${p.name}</h4>
             <div class="price-tag">₹${p.price}</div>
             ${qtyHtml}
-            <button class="buy" onclick="addToCart(${p.id})">Add to Cart</button>
+            <button class="buy" onclick="addToCart(${p.id})">${stock > 0 ? 'Add to Cart' : 'SOLD OUT'}</button>
         </div>`;
     });
     document.getElementById("productList").innerHTML = html;
 }
+
+// --- BACK BUTTON FIX ---
 function openProduct(id) {
     const p = allProducts.find(x => x.id === id);
     const body = document.getElementById("modalBody");
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
-            <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-                <img src="${p.image_url}">
+            <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)" ontouchmove="handleZoom(event)">
+                <img src="${p.image_url}" id="zoomImg">
             </div>
         </div>
         <div style="flex:1; min-width:300px;">
@@ -209,9 +195,47 @@ function openProduct(id) {
             <div class="price-tag" style="font-size:3rem">₹${p.price}</div>
             <button class="buy" style="height:60px; background:var(--neon-btn); color:black;" onclick="addToCart(${p.id}); closeModal()">Reserve Item</button>
         </div>`;
+    
     document.getElementById("productModal").style.display = "block";
+    document.body.style.overflow = "hidden";
+    
+    // Push a state so "Back" button closes modal
+    history.pushState({ modalOpen: true }, "");
 }
 
+// Close modals when Back button is pressed
+window.onpopstate = function() {
+    closeModal();
+    document.getElementById("cartModal").style.display = "none";
+};
+
+function closeModal() {
+    document.getElementById("productModal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+// --- AUTO-ZOOM FIX ---
+function handleZoom(e) {
+    const box = e.currentTarget;
+    const img = box.querySelector('img');
+    const rect = box.getBoundingClientRect();
+    
+    // Support for both Mouse and Touch
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = "scale(2.5)";
+}
+
+function resetZoom(e) { 
+    e.currentTarget.querySelector('img').style.transform = "scale(1)"; 
+}
+
+// Rest of your functions (addToCart, toggleCart, checkout) remain the same
 function addToCart(id) {
     const p = allProducts.find(x => x.id === id);
     const qInput = document.getElementById(`qty-${id}`);
@@ -228,25 +252,28 @@ function toggleCart() {
     else {
         list.innerHTML = cart.map((item, i) => `<div class="cart-item"><span>${item.name}</span><span>₹${item.price} <button onclick="removeFromCart(${i})" style="color:red; background:none; border:none; cursor:pointer;">[X]</button></span></div>`).join('');
         const sub = cart.reduce((a, b) => a + b.price, 0);
-        total.innerHTML = `<p>Prepaid: ₹${sub + 150}</p><p>COD: ₹${sub + 250}</p>`;
+        total.innerHTML = `<p style="color:#00f3ff">Prepaid Total: ₹${sub + 150}</p><p style="color:#ffcb05">COD Total: ₹${sub + 250}</p>`;
+    }
+    
+    if (modal.style.display !== "block") {
+        history.pushState({ cartOpen: true }, "");
     }
     modal.style.display = modal.style.display === "block" ? "none" : "block";
 }
 
 function removeFromCart(i) { cart.splice(i, 1); document.getElementById("cartCount").innerText = cart.length; toggleCart(); toggleCart(); }
-function handleZoom(e) { const img = e.currentTarget.querySelector('img'); const rect = e.currentTarget.getBoundingClientRect(); const x = ((e.clientX - rect.left) / rect.width) * 100; const y = ((e.clientY - rect.top) / rect.height) * 100; img.style.transformOrigin = `${x}% ${y}%`; img.style.transform = "scale(2.5)"; }
-function resetZoom(e) { e.currentTarget.querySelector('img').style.transform = "scale(1)"; }
-function closeModal() { document.getElementById("productModal").style.display = "none"; }
 function changeCategory(cat) { currentCategory = cat; render(); }
 function checkout() {
     const sub = cart.reduce((a, b) => a + b.price, 0);
-    const msg = `Hi PokeIndia, I want:\n${cart.map(i => `- ${i.name}`).join("\n")}\n\nPrepaid: ₹${sub+150}\nCOD: ₹${sub+250}`;
+    const msg = `Hi PokeIndia, I want to order:\n${cart.map(i => `- ${i.name}`).join("\n")}\n\nPrepaid Total: ₹${sub+150}\nCOD Total: ₹${sub+250}\n\nPlease share payment details!`;
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(msg));
 }
+
 fetchProducts();
 </script>
 </body>
 </html>
+
 
 
 
