@@ -18,35 +18,42 @@
     <div id="store" class="card-container">Loading cards...</div>
 
     <script>
-        // Use the keys we just put in your .env file
-        const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
-        const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
-        const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
+    // 1. Your Connection Details
+    const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
+    const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
+    
+    // 2. The corrected "Wake Up" command for the browser
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        async function loadCards() {
-            const { data, error } = await supabase.from('products').select('*');
-            const storeDiv = document.getElementById('store');
-            
-            if (error) {
-                storeDiv.innerHTML = "Error loading cards: " + error.message;
-                return;
-            }
-
-            storeDiv.innerHTML = '';
-            data.forEach(card => {
-                storeDiv.innerHTML += `
-                    <div class="card">
-                        <img src="${card.image_front}" alt="${card.name}">
-                        <h3>${card.name}</h3>
-                        <p class="price">₹${card.price}</p>
-                        <button onclick="window.location.href='https://wa.me/7976132992'">Buy via GPay</button>
-                    </div>
-                `;
-            });
+    async function loadCards() {
+        // 3. Look into your 'products' table
+        const { data, error } = await supabase.from('products').select('*');
+        const storeDiv = document.getElementById('store');
+        
+        if (error) {
+            console.error("Supabase Error:", error);
+            storeDiv.innerHTML = "Connection Error: " + error.message;
+            return;
         }
-        loadCards();
-    </script>
-</body>
 
-</html>
+        if (!data || data.length === 0) {
+            storeDiv.innerHTML = "No cards found in the 'products' table.";
+            return;
+        }
+
+        // 4. Show the cards
+        storeDiv.innerHTML = '';
+        data.forEach(card => {
+            storeDiv.innerHTML += `
+                <div class="card">
+                    <img src="${card.image_front || 'https://via.placeholder.com/150'}" alt="${card.name}">
+                    <h3>${card.name}</h3>
+                    <p class="price">₹${card.price}</p>
+                    <button onclick="window.location.href='https://wa.me/91YOUR_NUMBER'">Buy via GPay</button>
+                </div>
+            `;
+        });
+    }
+    loadCards();
+</script>
 
