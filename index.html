@@ -61,7 +61,7 @@
             data.forEach(item => {
                 storeDiv.innerHTML += `
                     <div class="card">
-                        <img src="${item.image_front || 'https://via.placeholder.com/200'}" alt="${item.name}">
+                       <img src="${item.image_url}" alt="${item.name}">
                         <h3>${item.name}</h3>
                         <p>Condition: ${item.condition || 'NM'}</p>
                         <p class="price">₹${item.price}</p>
@@ -75,3 +75,4 @@
     </script>
 </body>
 </html>
+
