@@ -4,373 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PokeIndia TCG Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --primary: #ffcb05;
-            --secondary: #3c5aa6;
-            --neon-price: #39ff14;
-            --neon-blue: #00f3ff;
-            --bg-black: #050505;
-            --text: #ffffff;
-            --nm-minus-grad: linear-gradient(45deg, #8e44ad, #ff00ff);
-            --nm-plain: #3498db;
-        }
-
-        body { font-family: 'Poppins', sans-serif; background: var(--bg-black); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-        
-        /* COD TOP BAR */
-        .cod-bar {
-            background: linear-gradient(90deg, #ffcb05, #ff8800);
-            color: black;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-            font-size: 0.9rem;
-        }
-
-        .header { text-align: center; padding: 40px 20px; }
-        .header h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-family: 'Orbitron', sans-serif;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
-            margin: 0;
-        }
-
-        /* CART ICON */
-        .cart-icon-container {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            z-index: 1000;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 50%;
-            border: 1px solid var(--neon-blue);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-        .cart-count {
-            position: absolute; top: 0; right: 0; background: #ff0000;
-            color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.8rem; font-weight: bold;
-        }
-
-        /* NAV BUTTONS */
-        .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; padding: 0 20px; }
-        .nav-buttons button { 
-            padding: 10px 25px; cursor: pointer; border: 2px solid var(--neon-blue); 
-            border-radius: 5px; background: transparent; color: var(--neon-blue); 
-            font-family: 'Orbitron', sans-serif; font-weight: bold; transition: 0.3s;
-        }
-        .nav-buttons button:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
-
-        /* GRID */
-        .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: auto; padding: 0 20px; }
-        .product { background: #111; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; }
-        .product:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
-        .product img { width: 100%; height: 260px; object-fit: contain; border-radius: 10px; cursor: pointer; background: #000; }
-        
-        .price-tag { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--neon-price); text-shadow: 0 0 8px rgba(57, 255, 20, 0.6); margin: 10px 0; }
-
-        /* BADGES */
-        .badge { padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 10px; color: white; text-transform: uppercase; }
-        .nm-minus { background: var(--nm-minus-grad); animation: pulse 2s infinite; }
-        .nm-plain { background: var(--nm-plain); }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        /* BUTTONS */
-        button.buy { 
-            width: 100%; padding: 12px; background: transparent; color: #ff8c00; border: 2px solid #ff8c00; 
-            border-radius: 8px; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: bold; 
-            text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.3s;
-        }
-        button.buy:hover { background: #ff8c00; color: #000; box-shadow: 0 0 20px #ff8c00; }
-
-        .qty-input { width: 60px; padding: 5px; background: #222; color: white; border: 1px solid #444; border-radius: 4px; text-align: center; }
-
-        /* MODALS */
-        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); overflow-y: auto; }
-        .modal-content { background: #0a0a0a; margin: 5% auto; padding: 30px; width: 90%; max-width: 900px; border-radius: 15px; border: 1px solid #333; position: relative; }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 35px; color: white; cursor: pointer; }
-
-        /* ZOOM BOX */
-        .zoom-box { width: 100%; height: 450px; overflow: hidden; border-radius: 15px; background: #000; position: relative; cursor: crosshair; }
-        .zoom-box img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.1s ease-out; }
-
-        /* MARQUEE */
-        .trust-marquee { background: #000; border-top: 1px solid var(--neon-blue); border-bottom: 1px solid var(--neon-blue); padding: 15px 0; overflow: hidden; white-space: nowrap; margin: 60px 0; }
-        .marquee-content { display: inline-block; animation: walk 30s linear infinite; font-family: 'Orbitron', sans-serif; color: var(--neon-blue); font-size: 0.9rem; text-transform: uppercase; }
-        .marquee-content span { margin-right: 50px; }
-        @keyframes walk { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        /* LOAD MORE */
-        .next-btn-container { text-align: center; padding: 50px 0; }
-        .next-btn { 
-            background: transparent; color: #ffffff; border: 3px solid var(--primary); 
-            padding: 15px 45px; border-radius: 50px; font-family: 'Orbitron', sans-serif; 
-            font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .next-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 25px var(--primary); }
-
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding: 10px 0; }
-        .checkout-btn { background: #25d366; color: white; padding: 15px; width: 100%; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px; font-family: 'Orbitron'; }
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .card img { max-width: 100%; border-radius: 5px; margin-bottom: 10px; }
+        .price { font-size: 1.2em; font-weight: bold; color: #2e7d32; }
     </style>
 </head>
 <body>
+    <h1>PokeIndia TCG Store</h1>
+    <div id="store" class="card-container">Loading cards...</div>
 
-<div class="cod-bar">⚡ Cash on Delivery (COD) Available Pan-India ⚡</div>
+    <script>
+        // Use the keys we just put in your .env file
+        const supabaseUrl = https://tyxftjhxzypuugwbvoxf.supabase.co;
+        const supabaseKey = sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln;
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-<div class="cart-icon-container" onclick="toggleCart()">
-    <span style="font-size: 24px;">🛒</span>
-    <div class="cart-count" id="cartCount">0</div>
-</div>
+        async function loadCards() {
+            const { data, error } = await supabase.from('cards').select('*');
+            const storeDiv = document.getElementById('store');
+            
+            if (error) {
+                storeDiv.innerHTML = "Error loading cards: " + error.message;
+                return;
+            }
 
-<div class="header"><h1>PokeIndia TCG</h1></div>
-
-<div class="nav-buttons">
-    <button onclick="changeCategory('all')">ALL</button>
-    <button onclick="changeCategory('booster')">BOOSTER BOXES</button>
-    <button onclick="changeCategory('packs')">LOOSE PACKS</button>
-    <button onclick="changeCategory('cards')">SINGLE CARDS</button>
-</div>
-
-<div class="container" id="productList"></div>
-
-<div class="next-btn-container" id="pagination">
-    <button class="next-btn" onclick="loadNextPage()">LOAD MORE ITEMS</button>
-</div>
-
-<div class="trust-marquee">
-    <div class="marquee-content">
-        <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
-        <span>📦 Secure Bubble-Wrap & Top-Loader Packaging</span>
-        <span>📑 Tracking ID Shared within 24 Hours</span>
-        <span>🚚 Reliable Pan-India Shipping</span>
-        <span>💎 Trusted by Collectors Across India</span>
-        <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
-        <span>📦 Secure Bubble-Wrap & Top-Loader Packaging</span>
-        <span>📑 Tracking ID Shared within 24 Hours</span>
-        <span>🚚 Reliable Pan-India Shipping</span>
-        <span>💎 Trusted by Collectors Across India</span>
-    </div>
-</div>
-
-<div id="productModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div id="modalBody" style="display: flex; flex-wrap: wrap; gap: 30px;"></div>
-    </div>
-</div>
-
-<div id="cartModal" class="modal">
-    <div class="modal-content" style="max-width: 500px;">
-        <span class="close" onclick="toggleCart()">&times;</span>
-        <h2 style="font-family: 'Orbitron'; color: var(--neon-blue);">Your Inventory</h2>
-        <div id="cartList">Inventory is empty</div>
-        <div id="cartTotal"></div>
-        <button class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
-    </div>
-</div>
-
-<script>
-const products = [
-    { name: "Paradise Dragona Box (Korean)", price: 6000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
-    { name: "White Flare Booster Box (Korean)", price: 6500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
-    { name: "Korean Lost Abyss Booster Box", price: 7500, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
-    { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
-    { name: "Incandescent Arcana Pack (Japanese)", price: 900, category: "packs", images: ["images/incan.jpg"], maxQty: 2 },
-    { name: "Evolving Skies Pack (English)", price: 4000, category: "packs", images: ["images/evolvingsky.jpg"], maxQty: 1 },
-    { name: "Crimson Haze Pack (Japanese)", price: 270, category: "packs", images: ["images/crimson.jpg"], maxQty: 1 },
-    { name: "Super Electric Breaker Pack (Japanese)", price: 450, category: "packs", images: ["images/electricbreaker.jpg"], maxQty: 1 },
-    { name: "Ruler of the Black Flame Pack (Korean)", price: 230, category: "packs", images: ["images/robf.jpg"], maxQty: 1 },
-    { name: "Mega Brave Pack (Japanese) – M1L", price: 330, category: "packs", images: ["images/megabrave.jpg"], maxQty: 3 },
-    { name: "Pokemon Sword Pack (Japanese) – S1W", price: 1500, category: "packs", images: ["images/swordv.jpg"], maxQty: 3 },
-    { name: "2021 McDonald’s 25th Anniv. Pack (English)", price: 1200, category: "packs", images: ["images/mcdonald.jpg"], maxQty: 1 },
-    { name: "Gym Promo Pack Vol. 8 (Japanese)", price: 500, category: "packs", images: ["images/gym8.jpg"], maxQty: 1 },
-    { name: "Gym Promo Pack Vol. 7 (Japanese)", price: 500, category: "packs", images: ["images/gym7.jpg"], maxQty: 1 },
-    { name: "Mask of Change Pack (Korean)", price: 300, category: "packs", images: ["images/mask1.jpg"], maxQty: 12 },
-    { name: "Manaphy Holo Diamond & Pearl", price: 900, category: "cards", condition: "NM-", images: ["images/manphy1.jpg", "images/manphy2.jpg"], maxQty: 1 },
-    { name: "Arceus Black Star Promo Japanese", price: 600, category: "cards", condition: "NM-", images: ["images/arceus3.jpg"], maxQty: 1 },
-    { name: "Muk & Alolan Muk GX Tag Team", price: 900, category: "cards", condition: "NM", images: ["images/muktag.jpg"], maxQty: 1 },
-    { name: "Dialga Movie Commemoration Promo", price: 1400, category: "cards", condition: "NM-", images: ["images/dialga2.jpg"], maxQty: 1 },
-    { name: "Professor Sada's Vitality", price: 700, category: "cards", condition: "NM", images: ["images/proff.jpg"], maxQty: 1 },
-    { name: "Giratina Holo DP Japanese", price: 1700, category: "cards", condition: "NM", images: ["images/giratina1.jpg"], maxQty: 1 },
-    { name: "Greninja & Zoroark GX Tag Team", price: 1200, category: "cards", condition: "NM", images: ["images/greytag1.jpg", "images/greytag2.jpg"], maxQty: 1 },
-    { name: "Pikachu GG30/GG70 Crown Zenith", price: 2500, category: "cards", condition: "NM", images: ["images/pika1.jpg"], maxQty: 1 },
-    { name: "Pikachu & Zekrom GX Tag Team", price: 2800, category: "cards", condition: "NM", images: ["images/pikatag.jpg"], maxQty: 1 },
-    { name: "Night Stretcher SR JP", price: 500, category: "cards", condition: "NM", images: ["images/stretcher1.jpg"], maxQty: 1 },
-    { name: "Hoopa EX Legendary Shine JP", price: 1800, category: "cards", condition: "NM", images: ["images/hoopa2.jpg"], maxQty: 1 },
-    { name: "Mega Sableye & Tyranitar GX", price: 700, category: "cards", condition: "NM", images: ["images/sabletag1.jpg", "images/sabletag2.jpg"], maxQty: 1 },
-    { name: "Alakazam EX 1st Edition JP", price: 900, category: "cards", condition: "NM", images: ["images/alakazamex.jpg"], maxQty: 1 },
-    { name: "Deoxys Holo 1st Edition DP JP", price: 2000, category: "cards", condition: "NM-", images: ["images/deoxys.jpg"], maxQty: 1 },
-    { name: "Vulpix Art Rare 067/063 JP", price: 500, category: "cards", condition: "NM", images: ["images/vulpixar.jpg"], maxQty: 1 },
-    { name: "Cresselia 1st Ed DP Holo", price: 2000, category: "cards", condition: "NM-", images: ["images/cresselia1.jpg", "images/cresselia2.jpg"], maxQty: 1 },
-    { name: "Dialga LV. X 1st Edition JP", price: 4500, category: "cards", condition: "NM-", images: ["images/dialga1.jpg"], maxQty: 1 },
-    { name: "Porygon Holo 1st Ed DP JP", price: 1800, category: "cards", condition: "NM-", images: ["images/porygon1.jpg"], maxQty: 1 },
-    { name: "Togekiss Ancient Trait XY JP", price: 620, category: "cards", condition: "NM", images: ["images/togekiss.jpg"], maxQty: 1 },
-    { name: "Hoopa EX Best of XY JP", price: 1000, category: "cards", condition: "NM", images: ["images/hoopa1.jpg"], maxQty: 1 },
-    { name: "Turtonator Get Challenge Promo", price: 400, category: "cards", condition: "NM", images: ["images/turtonator.jpg"], maxQty: 1 },
-    { name: "Porygon-Z Bandit Ring JP", price: 850, category: "cards", condition: "NM", images: ["images/porygon.jpg"], maxQty: 1 },
-    { name: "Galarian Zapdos SWSH Promo", price: 500, category: "cards", condition: "NM", images: ["images/galarzapdos.jpg"], maxQty: 1 },
-    { name: "Ducklett BW-P Gym Promo JP", price: 600, category: "cards", condition: "NM", images: ["images/duckstamp.jpg"], maxQty: 1 },
-    { name: "Mothim Holo 1st Edition JP", price: 599, category: "cards", condition: "NM", images: ["images/mothim.jpg"], maxQty: 1 },
-    { name: "Mabosstiff ex Gym Holo JP", price: 350, category: "cards", condition: "NM", images: ["images/mabosstiff.jpg"], maxQty: 1 },
-    { name: "Inteleon VMAX Alternate Art", price: 3800, category: "cards", condition: "NM", images: ["images/inteleon1.jpg", "images/inteleon2.jpg"], maxQty: 1 },
-    { name: "Marnie Rainbow Rare Secret", price: 2000, category: "cards", condition: "NM", images: ["images/marnie1.jpg"], maxQty: 1 },
-    { name: "Minccino Black Bolt Holo JP", price: 900, category: "cards", condition: "NM", images: ["images/minccino1.jpg", "images/minccino2.jpg"], maxQty: 1 },
-    { name: "Morpeko V-Union Set Promo", price: 1100, category: "cards", condition: "NM", images: ["images/morpeko1.jpg", "images/morpeko2.jpg", "images/morpeko3.jpg", "images/morpeko4.jpg"], maxQty: 1 },
-    { name: "Arceus Holo LV.X 1st Ed JP", price: 3500, category: "cards", condition: "NM-", images: ["images/arceus1.jpg"], maxQty: 1 },
-    { name: "Urshifu V 158/125 Chinese", price: 900, category: "cards", condition: "NM", images: ["images/urshifu1.jpg"], maxQty: 1 },
-    { name: "Mega Pidgeot-EX XY Evolutions", price: 2000, category: "cards", condition: "NM-", images: ["images/megapidgeot.jpg"], maxQty: 1 },
-    { name: "Ice Rider Calyrex Sealed Promo", price: 1200, category: "cards", condition: "NM", images: ["images/calyrex.jpg"], maxQty: 1 },
-    { name: "Battle Reporter Full Art", price: 2100, category: "cards", condition: "NM-", images: ["images/battlereporter.jpg"], maxQty: 1 },
-    { name: "Darkrai Holo Movie Promo JP", price: 1500, category: "cards", condition: "NM-", images: ["images/darkrai.jpg"], maxQty: 1 },
-    { name: "Rayquaza GX Tag All Stars JP", price: 849, category: "cards", condition: "NM", images: ["images/rayquaza.jpg"], maxQty: 1 },
-    { name: "Genesect EX Plasma Blast Holo", price: 2600, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg", "images/gensectholo2.jpg"], maxQty: 1 }
-];
-
-let cart = [];
-let itemsToShow = 12;
-let currentCategory = 'all';
-
-function loadProducts() {
-    let filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
-    let displayList = filtered.slice(0, itemsToShow);
-    let html = "";
-
-    displayList.forEach((p) => {
-        const realIdx = products.indexOf(p);
-        const isCard = p.category === 'cards';
-        const badge = isCard ? (p.condition === "NM-" ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
-        // Removed QTY box for single cards
-        const qtyHtml = !isCard ? `<div style="margin-top:10px;"><input type="number" id="qty-${realIdx}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
-
-        html += `
-        <div class="product">
-            ${badge}
-            <img src="${p.images[0]}" onclick="openProduct(${realIdx})">
-            <h4 style="margin: 10px 0;">${p.name}</h4>
-            <div class="price-tag">₹${p.price}</div>
-            ${qtyHtml}
-            <button class="buy" onclick="addToCart(${realIdx})">Add to Cart</button>
-        </div>`;
-    });
-    document.getElementById("productList").innerHTML = html;
-    document.getElementById("pagination").style.display = (itemsToShow >= filtered.length) ? "none" : "block";
-}
-
-function openProduct(index) {
-    const p = products[index];
-    const modal = document.getElementById("productModal");
-    const body = document.getElementById("modalBody");
-    const isCard = p.category === 'cards';
-    const badge = isCard ? (p.condition === "NM-" ? `<div class="badge nm-minus" style="font-size:1rem;">Condition: NM-</div>` : `<div class="badge nm-plain" style="font-size:1rem;">Condition: NM</div>`) : '';
-
-    body.innerHTML = `
-        <div style="flex:1; min-width:300px; max-width:450px;">
-            <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-                <img src="${p.images[0]}" id="mainModalImg">
-            </div>
-            <div style="display:flex; gap:10px; margin-top:10px; overflow-x:auto; padding-bottom:5px;">
-                ${p.images.map(img => `<img src="${img}" style="width:60px; height:80px; object-fit:contain; border:1px solid #444; cursor:pointer;" onclick="document.getElementById('mainModalImg').src='${img}'">`).join('')}
-            </div>
-        </div>
-        <div style="flex:1; min-width:300px;">
-            ${badge}
-            <h2 style="font-family:'Orbitron'; margin-top:10px;">${p.name}</h2>
-            <div style="font-family:'Orbitron'; font-size:2.8rem; color:var(--neon-price); text-shadow:0 0 10px var(--neon-price);">₹${p.price}</div>
-            <p style="color:#aaa; margin-top:20px;">Secure checkout via WhatsApp. GPay accepted.</p>
-            <button class="buy" style="height:60px; font-size:1.3rem; background:var(--neon-blue); color:black;" onclick="addToCartModal(${index}); closeModal()">Reserve This Item</button>
-        </div>
-    `;
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
-    window.history.pushState({modal: true}, "");
-}
-
-function addToCart(idx) {
-    const p = products[idx];
-    const qtyInput = document.getElementById(`qty-${idx}`);
-    let qty = qtyInput ? parseInt(qtyInput.value) : 1;
-    if(qty > p.maxQty) return alert(`Limit exceeded! Only ${p.maxQty} left.`);
-    for(let i=0; i<qty; i++) cart.push(p);
-    updateCartCount();
-}
-
-function addToCartModal(idx) { cart.push(products[idx]); updateCartCount(); }
-function updateCartCount() { document.getElementById("cartCount").innerText = cart.length; }
-
-function toggleCart() {
-    const modal = document.getElementById("cartModal");
-    const list = document.getElementById("cartList");
-    const total = document.getElementById("cartTotal");
-    if (modal.style.display !== "block") { window.history.pushState({modal: true}, ""); }
-    if(cart.length === 0) {
-        list.innerHTML = "Inventory is currently empty.";
-        total.innerHTML = "";
-    } else {
-        list.innerHTML = cart.map((item, i) => `
-            <div class="cart-item">
-                <span>${item.name}</span>
-                <span style="color:var(--neon-price)">₹${item.price} <button onclick="removeFromCart(${i})" style="background:none; border:none; color:red; cursor:pointer; margin-left:10px;">[X]</button></span>
-            </div>
-        `).join('');
-        
-        const subtotal = cart.reduce((a, b) => a + b.price, 0);
-        total.innerHTML = `
-            <div style="margin-top:20px; border-top: 1px solid #333; padding-top:10px; font-family:'Orbitron';">
-                <p style="color:var(--neon-blue); margin:0;">Prepaid Total: ₹${subtotal + 150}</p>
-                <p style="color:var(--primary); margin:0;">COD Total: ₹${subtotal + 250}</p>
-            </div>`;
-    }
-    modal.style.display = (modal.style.display === "block") ? "none" : "block";
-}
-
-function removeFromCart(i) { cart.splice(i, 1); updateCartCount(); toggleCart(); toggleCart(); }
-function handleZoom(e) {
-    const box = e.currentTarget;
-    const img = box.querySelector('img');
-    const rect = box.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    img.style.transformOrigin = `${x}% ${y}%`;
-    img.style.transform = "scale(2.5)";
-}
-function resetZoom(e) { e.currentTarget.querySelector('img').style.transform = "scale(1)"; }
-function closeModal() { document.getElementById("productModal").style.display = "none"; document.body.style.overflow = "auto"; }
-function changeCategory(cat) { currentCategory = cat; itemsToShow = 12; loadProducts(); }
-function loadNextPage() { itemsToShow += 12; loadProducts(); }
-
-function checkout() {
-    if(cart.length === 0) return;
-    const subtotal = cart.reduce((a, b) => a + b.price, 0);
-    const text = "Hi PokeIndia TCG, I want to order:\n" + 
-                 cart.map(i => `- ${i.name}`).join("\n") + 
-                 "\n\nSubtotal: ₹" + subtotal +
-                 "\nPrepaid Total (₹150 ship): ₹" + (subtotal + 150) +
-                 "\nCOD Total (₹250 ship): ₹" + (subtotal + 250) +
-                 "\n\nPlease let me know your GPay details!";
-    window.open("https://wa.me/7976132992?text=" + encodeURIComponent(text));
-}
-// This tells the phone what to do when the back button is pressed
-window.onpopstate = function() {
-    closeModal(); // Closes the product view
-    document.getElementById("cartModal").style.display = "none"; // Closes the cart
-    document.body.style.overflow = "auto"; // Re-enables scrolling
-};
-// Initial Load
-loadProducts();
-</script>
+            storeDiv.innerHTML = '';
+            data.forEach(card => {
+                storeDiv.innerHTML += `
+                    <div class="card">
+                        <img src="${card.image_front}" alt="${card.name}">
+                        <h3>${card.name}</h3>
+                        <p class="price">₹${card.price}</p>
+                        <button onclick="window.location.href='https://wa.me/7976132992'">Buy via GPay</button>
+                    </div>
+                `;
+            });
+        }
+        loadCards();
+    </script>
 </body>
 </html>
-
-
