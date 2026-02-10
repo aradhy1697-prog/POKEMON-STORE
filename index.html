@@ -6,74 +6,92 @@
     <title>P0keIndia TCG Store</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; }
-        .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; }
-        .card { 
-            background: white; border-radius: 12px; padding: 15px; margin: 10px; 
-            width: 250px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        }
-        img { width: 100%; border-radius: 8px; }
-        .price { font-size: 1.2em; color: #2ecc71; font-weight: bold; }
-        button { 
-            background: #25d366; color: white; border: none; padding: 10px 20px; 
-            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
-        }
-        #status-message { color: #666; margin-top: 50px; }
+        :root { --primary: #e63946; --dark: #1d3557; --light: #f1faee; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding: 20px; color: var(--dark); }
+        h1 { text-align: center; color: var(--primary); }
+        .store-link { text-align: center; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .card img { max-width: 100%; height: 200px; object-fit: contain; border-radius: 8px; }
+        .price { font-size: 1.2rem; font-weight: bold; color: #2a9d8f; margin: 10px 0; }
+        .qty-box { margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .qty-box input { width: 50px; padding: 5px; text-align: center; }
+        button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
+        button:hover { opacity: 0.9; }
+        .category-tag { font-size: 0.8rem; text-transform: uppercase; color: #666; }
     </style>
 </head>
 <body>
 
-    <h1>P0keIndia TCG Store</h1>
-    <p>Direct Payment via GPay / WhatsApp</p>
+    <h1>P0keIndia TCG</h1>
+    <div class="store-link">
+        <a href="https://take.app/p0keindiatcg" target="_blank">Official Store Link</a>
+    </div>
 
-    <div id="status-message">Loading cards...</div>
-    <div class="container" id="store"></div>
+    <div id="products-grid" class="grid">
+        </div>
 
     <script>
-        // 1. Connection Details
-        const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
-        const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
+        // 1. YOUR SUPABASE CONFIG
+        const _supabase = supabase.createClient(
+            'https://tyxftjhxzypuugwbvoxf.supabase.co', 
+            'YOUR_SUPABASE_ANON_KEY' // <--- PASTE YOUR ACTUAL ANON KEY HERE
+        );
 
-        // 2. Initialize the client
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        async function loadStore() {
-            const storeDiv = document.getElementById('store');
-            const statusMsg = document.getElementById('status-message');
-
-            // 3. Fetch from 'products' table
-            const { data, error } = await _supabase.from('products').select('*');
+        async function loadProducts() {
+            const { data: products, error } = await _supabase
+                .from('products')
+                .select('*')
+                .order('category', { ascending: true });
 
             if (error) {
-                statusMsg.innerHTML = "❌ Connection Error: " + error.message;
+                console.error("Error loading products:", error);
                 return;
             }
 
-            if (!data || data.length === 0) {
-                statusMsg.innerHTML = "⚠️ No cards found. Run the SQL INSERT command in Supabase!";
-                return;
-            }
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
 
-            // 4. Success - Clear status and show cards
-            statusMsg.style.display = 'none';
-            storeDiv.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'card';
 
-            data.forEach(item => {
-                storeDiv.innerHTML += `
-                    <div class="card">
-                       <img src="${item.image_url}" alt="${item.name}">
-                        <h3>${item.name}</h3>
-                        <p>Condition: ${item.condition || 'NM'}</p>
-                        <p class="price">₹${item.price}</p>
-                        <button onclick="window.location.href='https://wa.me/917976132992?text=I want to buy ${item.name}'">Buy via WhatsApp</button>
-                    </div>
+                // Check if it's a card to hide quantity
+                // Assuming categories are named 'booster', 'packs', and 'cards'
+                const isSingleCard = product.category === 'cards';
+
+                card.innerHTML = `
+                    <img src="${product.image_url || 'https://via.placeholder.com/200'}" alt="${product.name}">
+                    <div class="category-tag">${product.category}</div>
+                    <h3>${product.name}</h3>
+                    <div class="price">₹${product.price}</div>
+                    
+                    ${!isSingleCard ? `
+                        <div class="qty-box">
+                            <label>Qty:</label>
+                            <input type="number" id="qty-${product.id}" value="1" min="1">
+                        </div>
+                    ` : '<div style="height:44px;"></div>'} 
+                    
+                    <button onclick="orderViaWhatsApp('${product.name}', ${product.id}, ${isSingleCard})">
+                        Order via WhatsApp
+                    </button>
                 `;
+                grid.appendChild(card);
             });
         }
 
-        loadStore();
+        function orderViaWhatsApp(name, id, isSingle) {
+            let qty = 1;
+            if (!isSingle) {
+                qty = document.getElementById(`qty-${id}`).value;
+            }
+            const message = `Hi P0keIndia! I want to order:\n- ${name}\n- Quantity: ${qty}\n\nPlease share Gpay details.`;
+            const whatsappUrl = `https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(message)}`; // <--- CHANGE TO YOUR PHONE NUMBER
+            window.open(whatsappUrl, '_blank');
+        }
+
+        loadProducts();
     </script>
 </body>
 </html>
-
-
