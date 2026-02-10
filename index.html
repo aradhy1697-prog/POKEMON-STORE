@@ -160,17 +160,28 @@ async function fetchProducts() {
 function render() {
     let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
     let html = "";
+    
     filtered.forEach(p => {
         const isCard = p.category === 'cards';
         const isNMMinus = (p.name && p.name.includes('NM-')) || p.condition === 'NM-';
         const badge = isCard ? (isNMMinus ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
-        const qtyHtml = !isCard ? `<div style="margin-top:10px;"><input type="number" id="qty-${p.id}" class="qty-input" value="1" min="1"></div>` : '';
+        
+        // --- NEW STOCK DISPLAY LOGIC ---
+        // Checks the 'max_qty' column from your Supabase table
+        const stockCount = p.max_qty || p.maxQty || 0; 
+        const stockLabel = !isCard ? `<div style="color: #aaa; font-size: 0.7rem; margin-top: 5px; font-family: 'Orbitron';">Stock: ${stockCount} available</div>` : '';
+        
+        const qtyHtml = !isCard ? `
+            <div style="margin-top:10px;">
+                <input type="number" id="qty-${p.id}" class="qty-input" value="1" min="1" max="${stockCount}">
+                ${stockLabel}
+            </div>` : '';
 
         html += `
         <div class="product">
             ${badge}
             <img src="${p.image_url}" onclick="openProduct(${p.id})">
-            <h4>${p.name}</h4>
+            <h4 style="font-family:'Poppins'; margin: 10px 0;">${p.name}</h4>
             <div class="price-tag">₹${p.price}</div>
             ${qtyHtml}
             <button class="buy" onclick="addToCart(${p.id})">Add to Cart</button>
@@ -231,3 +242,4 @@ fetchProducts();
 </script>
 </body>
 </html>
+
