@@ -3,57 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PokeIndia TCG Store</title>
+    <title>P0keIndia TCG Store</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        .card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        .card img { max-width: 100%; border-radius: 5px; margin-bottom: 10px; }
-        .price { font-size: 1.2em; font-weight: bold; color: #2e7d32; }
+        body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; }
+        .card { 
+            background: white; border-radius: 12px; padding: 15px; margin: 10px; 
+            width: 250px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        img { width: 100%; border-radius: 8px; }
+        .price { font-size: 1.2em; color: #2ecc71; font-weight: bold; }
+        button { 
+            background: #25d366; color: white; border: none; padding: 10px 20px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        #status-message { color: #666; margin-top: 50px; }
     </style>
 </head>
 <body>
-    <h1>PokeIndia TCG Store</h1>
-    <div id="store" class="card-container">Loading cards...</div>
+
+    <h1>P0keIndia TCG Store</h1>
+    <p>Direct Payment via GPay / WhatsApp</p>
+
+    <div id="status-message">Loading cards...</div>
+    <div class="container" id="store"></div>
 
     <script>
-    // 1. Your Connection Details
-    const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
-    const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
-    
-    // 2. The corrected "Wake Up" command for the browser
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // 1. Connection Details
+        const supabaseUrl = 'https://tyxftjhxzypuugwbvoxf.supabase.co';
+        const supabaseKey = 'sb_publishable_nspdcRpIW2QVFP1fc2N13g_U4glBVln';
 
-    async function loadCards() {
-        // 3. Look into your 'products' table
-        const { data, error } = await supabase.from('products').select('*');
-        const storeDiv = document.getElementById('store');
-        
-        if (error) {
-            console.error("Supabase Error:", error);
-            storeDiv.innerHTML = "Connection Error: " + error.message;
-            return;
+        // 2. Initialize the client
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function loadStore() {
+            const storeDiv = document.getElementById('store');
+            const statusMsg = document.getElementById('status-message');
+
+            // 3. Fetch from 'products' table
+            const { data, error } = await _supabase.from('products').select('*');
+
+            if (error) {
+                statusMsg.innerHTML = "❌ Connection Error: " + error.message;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                statusMsg.innerHTML = "⚠️ No cards found. Run the SQL INSERT command in Supabase!";
+                return;
+            }
+
+            // 4. Success - Clear status and show cards
+            statusMsg.style.display = 'none';
+            storeDiv.innerHTML = '';
+
+            data.forEach(item => {
+                storeDiv.innerHTML += `
+                    <div class="card">
+                        <img src="${item.image_front || 'https://via.placeholder.com/200'}" alt="${item.name}">
+                        <h3>${item.name}</h3>
+                        <p>Condition: ${item.condition || 'NM'}</p>
+                        <p class="price">₹${item.price}</p>
+                        <button onclick="window.location.href='https://wa.me/91YOUR_NUMBER'">Buy via WhatsApp</button>
+                    </div>
+                `;
+            });
         }
 
-        if (!data || data.length === 0) {
-            storeDiv.innerHTML = "No cards found in the 'products' table.";
-            return;
-        }
-
-        // 4. Show the cards
-        storeDiv.innerHTML = '';
-        data.forEach(card => {
-            storeDiv.innerHTML += `
-                <div class="card">
-                    <img src="${card.image_front || 'https://via.placeholder.com/150'}" alt="${card.name}">
-                    <h3>${card.name}</h3>
-                    <p class="price">₹${card.price}</p>
-                    <button onclick="window.location.href='https://wa.me/91YOUR_NUMBER'">Buy via GPay</button>
-                </div>
-            `;
-        });
-    }
-    loadCards();
-</script>
-
+        loadStore();
+    </script>
+</body>
+</html>
