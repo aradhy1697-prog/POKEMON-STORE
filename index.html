@@ -24,7 +24,7 @@
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadCards() {
-            const { data, error } = await supabase.from('cards').select('*');
+            const { data, error } = await supabase.from('products').select('*');
             const storeDiv = document.getElementById('store');
             
             if (error) {
@@ -47,4 +47,5 @@
         loadCards();
     </script>
 </body>
+
 </html>
