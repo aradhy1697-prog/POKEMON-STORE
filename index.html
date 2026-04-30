@@ -173,9 +173,10 @@
 <script>
 const products = [
     // Booster Boxes
-    { name: "Paradise Dragona Box (Korean)", price: 4500, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
-    { name: "White Flare Booster Box (Korean)", price: 5500, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
-    { name: "Korean Lost Abyss Booster Box", price: 8000, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
+   // Booster Boxes
+    { name: "Paradise Dragona Box (Korean)", price: 4500, ripPrice: 4000, category: "booster", images: ["images/paradise1.jpg"], maxQty: 1 },
+    { name: "White Flare Booster Box (Korean)", price: 5500, ripPrice: 5000, category: "booster", images: ["images/whiteflare1.jpg"], maxQty: 1 },
+    { name: "Korean Lost Abyss Booster Box", price: 8000, ripPrice: 7000, category: "booster", images: ["images/lostabyss1.jpg"], maxQty: 1 },
     
     // Packs
     { name: "Glory of Team Rocket Pack (Korean)", price: 270, category: "packs", images: ["images/gotr.jpg"], maxQty: 2 },
@@ -242,8 +243,14 @@ function render() {
         const isSold = p.soldOut === true; 
         const soldOverlay = isSold ? `<div class="sold-overlay"><div class="sold-banner">SOLD OUT</div></div>` : '';
         const isCard = p.category === 'cards';
+        const isBooster = p.category === 'booster'; // New check for boosters
+        
         const badge = isCard ? (p.condition === "NM-" ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
         const qtyHtml = (!isCard && !isSold) ? `<div style="margin-top:10px;"><input type="number" id="qty-${products.indexOf(p)}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
+
+        // Only show Rip & Ship button for boosters that aren't sold out
+        const ripShipHtml = (isBooster && !isSold && p.ripPrice) ? 
+            `<button class="buy" style="border-color: #00f3ff; color: #00f3ff; margin-top: 10px;" onclick="addToCartRip(${products.indexOf(p)})">Rip & Ship (₹${p.ripPrice})</button>` : '';
 
         html += `
         <div class="product">
@@ -255,7 +262,8 @@ function render() {
             <h4>${p.name}</h4>
             <div class="price-tag">${isSold ? 'OUT OF STOCK' : `₹${p.price}`}</div>
             ${qtyHtml}
-            <button class="buy" onclick="addToCart(${products.indexOf(p)})" ${isSold ? 'disabled' : ''}>${isSold ? 'SOLD' : 'Add to Cart'}</button>
+            <button class="buy" onclick="addToCart(${products.indexOf(p)})" ${isSold ? 'disabled' : ''}>${isSold ? 'Seal Order' : 'Add to Cart'}</button>
+            ${ripShipHtml}
         </div>`;
     });
     document.getElementById("productList").innerHTML = html || "No items found.";
@@ -278,7 +286,14 @@ function openProduct(index) {
     document.getElementById("productModal").style.display = "block";
     document.body.style.overflow = "hidden";
 }
-
+function addToCartRip(index) {
+    const p = {...products[index]}; 
+    p.name = p.name + " (RIP & SHIP)"; 
+    p.price = p.ripPrice; 
+    cart.push(p);
+    document.getElementById("cartCount").innerText = cart.length;
+    alert("Added Rip & Ship to cart!");
+}
 function addToCart(index) {
     const p = products[index];
     const qInput = document.getElementById(`qty-${index}`);
