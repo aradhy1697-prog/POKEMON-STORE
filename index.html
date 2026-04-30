@@ -194,8 +194,8 @@ const products = [
     // Single Cards
     { name: "Manaphy Holo Diamond & Pearl", price: 800, category: "cards", condition: "NM-", images: ["images/manphy1.jpg"], maxQty: 1 },
     { name: "Arceus Diamond & Pearl Black Star Promo JP", price: 600, category: "cards", condition: "NM-", images: ["images/arceus3.jpg"], maxQty: 1, soldOut: true },
-    { name: "Dialga Movie Commemoration Promo JP", price: 1400, category: "cards", condition: "NM-", images: ["images/dialga2.jpg"], maxQty:, 1, soldOut: true},
-    { name: "Deoxys Holo 1st Edition DP JP", price: 1200, category: "cards", condition: "LP", images: ["images/deoxys.jpg"], maxQty: 1 },
+    { name: "Dialga Movie Commemoration Promo JP", price: 1400, category: "cards", condition: "NM-", images: ["images/dialga2.jpg"], maxQty: 1, soldOut: true },
+    { name: "Deoxys Holo 1st Edition DP JP", price: 1200, category: "cards", condition: "LP", images: ["images/deoxys.jpg"], maxQty: 1, soldOut: true },
     { name: "Cresselia 1st Ed DP Holo JP", price: 1000, category: "cards", condition: "LP", images: ["images/cresselia1.jpg"], maxQty: 1 },
     { name: "Dialga LV. X 1st Edition DP3 JP", price: 3200, category: "cards", condition: "LP", images: ["images/dialga1.jpg"], maxQty: 1 },
     { name: "Porygon Holo 1st Edition DP", price: 600, category: "cards", condition: "MP", images: ["images/porygon1.jpg"], maxQty: 1 },
@@ -239,14 +239,10 @@ function render() {
     let filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
     let html = "";
     filtered.forEach((p, i) => {
-        // Logic to check if the item is sold out
         const isSold = p.soldOut === true; 
         const soldOverlay = isSold ? `<div class="sold-overlay"><div class="sold-banner">SOLD OUT</div></div>` : '';
-
         const isCard = p.category === 'cards';
         const badge = isCard ? (p.condition === "NM-" ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
-        
-        // Hide quantity box for singles or sold out items
         const qtyHtml = (!isCard && !isSold) ? `<div style="margin-top:10px;"><input type="number" id="qty-${products.indexOf(p)}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
 
         html += `
