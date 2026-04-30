@@ -458,26 +458,22 @@ function checkout() {
         <span>📑 Tracking ID Shared within 24 Hours of Dispatch</span>
         <span>🚚 Reliable Pan-India Shipping</span>
         <span>💎 Trusted by Collectors Across India</span>
-        <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
-        <span>📦 Secure Bubble-Wrap & Top-Loader Packaging</span>
-        <span>📑 Tracking ID Shared within 24 Hours of Dispatch</span>
     </div>
-
+</div>
 
 <script>
+    // Initialize the store
+    loadProducts();
 
-loadProducts();
     // This makes zoom work on mobile taps
-document.addEventListener('touchstart', function(e) {
-    if (e.target.closest('.image-zoom-container')) {
-        handleZoom(e);
-    }
-}, false);
+    document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.zoom-box')) {
+            handleZoom(e);
+        }
+    }, false);
 </script>
 </body>
 </html>
-
-
 
 
 
