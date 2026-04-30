@@ -89,6 +89,39 @@
 
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding: 10px 0; }
         .checkout-btn { background: #25d366; color: white; padding: 15px; width: 100%; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+   /* This creates the red banner and the dimmed effect on the card */
+.img-container {
+    position: relative; /* This is the anchor for the banner */
+    overflow: hidden;   /* This keeps the banner inside the card borders */
+}
+
+.sold-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 0, 0, 0.25); /* Gives the card a slight red tint */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* Allows clicks to ignore the banner */
+    z-index: 10;
+}
+
+.sold-banner {
+    background: #ff1a1a;
+    color: white;
+    font-family: 'Orbitron', sans-serif; /* Keeps your futuristic theme */
+    font-weight: 900;
+    font-size: 1.4rem;
+    padding: 8px 60px;
+    transform: rotate(-30deg); /* The "awesome" slanted look */
+    box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    border: 2px solid white;
+    text-shadow: 2px 2px 4px black;
+    white-space: nowrap;
+}
     </style>
 </head>
 <body>
@@ -206,18 +239,27 @@ function render() {
     let filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
     let html = "";
     filtered.forEach((p, i) => {
+        // Logic to check if the item is sold out
+        const isSold = p.soldOut === true; 
+        const soldOverlay = isSold ? `<div class="sold-overlay"><div class="sold-banner">SOLD OUT</div></div>` : '';
+
         const isCard = p.category === 'cards';
         const badge = isCard ? (p.condition === "NM-" ? `<div class="badge nm-minus">NM-</div>` : `<div class="badge nm-plain">NM</div>`) : '';
-        const qtyHtml = !isCard ? `<div style="margin-top:10px;"><input type="number" id="qty-${products.indexOf(p)}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
+        
+        // Hide quantity box for singles or sold out items
+        const qtyHtml = (!isCard && !isSold) ? `<div style="margin-top:10px;"><input type="number" id="qty-${products.indexOf(p)}" class="qty-input" value="1" min="1" max="${p.maxQty}"></div>` : '';
 
         html += `
         <div class="product">
             ${badge}
-            <img src="${p.images[0]}" onclick="openProduct(${products.indexOf(p)})">
+            <div class="img-container">
+                <img src="${p.images[0]}" onclick="${isSold ? '' : `openProduct(${products.indexOf(p)})`}">
+                ${soldOverlay}
+            </div>
             <h4>${p.name}</h4>
-            <div class="price-tag">₹${p.price}</div>
+            <div class="price-tag">${isSold ? 'OUT OF STOCK' : `₹${p.price}`}</div>
             ${qtyHtml}
-            <button class="buy" onclick="addToCart(${products.indexOf(p)})">Add to Cart</button>
+            <button class="buy" onclick="addToCart(${products.indexOf(p)})" ${isSold ? 'disabled' : ''}>${isSold ? 'SOLD' : 'Add to Cart'}</button>
         </div>`;
     });
     document.getElementById("productList").innerHTML = html || "No items found.";
