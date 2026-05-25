@@ -275,7 +275,7 @@ function openProduct(index) {
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
             <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-                <img src="${p.images[0]}" id="zoomImg">
+                <img src="${p.fullImage || p.images[0]}" id="zoomImg">
             </div>
         </div>
         <div style="flex:1; min-width:300px;">
@@ -366,7 +366,11 @@ if (sortValue === "priceHigh") {
 
             <div class="img-container">
 
-                <img src="${p.images[0]}" onclick="openProduct(${products.indexOf(p)})">
+                <img 
+    src="${p.thumbnail || p.images[0]}" 
+    loading="lazy"
+    onclick="openProduct(${products.indexOf(p)})"
+>
 
                 ${p.soldOut ? `
                 <div class="sold-overlay">
