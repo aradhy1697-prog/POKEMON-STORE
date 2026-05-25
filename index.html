@@ -316,13 +316,13 @@ const products = [
     { name: "Genesect EX Plasma Blast Holo", price: 2200, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg"], maxQty: 1 }
 ];
 
-function openProduct(index) {
+function openProduct(index) { alert("clicked");
     const p = products[index];
     const body = document.getElementById("modalBody");
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
             <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-                <img src="${p.fullImage || p.images[0]}" id="zoomImg">
+               <img src="${p.fullImages?.[0] || p.thumbnail || p.images[0]}" id="zoomImg">
             </div>
         </div>
         <div style="flex:1; min-width:300px;">
