@@ -321,9 +321,18 @@ function openProduct(index) {
     const body = document.getElementById("modalBody");
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
-            <div class="zoom-box" onmousemove="handleZoom(event)" onmouseleave="resetZoom(event)">
-               <img src="${p.fullImages?.[0] || p.thumbnail || p.images[0]}" id="zoomImg">
-            </div>
+           <div class="zoom-box">
+    <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
+
+    ${p.fullImages && p.fullImages.length > 1 ? `
+        <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+            ${p.fullImages.map(img => `
+                <img src="${img}" onclick="document.getElementById('zoomImg').src='${img}'"
+                style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
+            `).join('')}
+        </div>
+    ` : ""}
+</div>
         </div>
         <div style="flex:1; min-width:300px;">
             <h2 style="font-family:'Orbitron'">${p.name}</h2>
