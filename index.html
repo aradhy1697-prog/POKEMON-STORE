@@ -327,7 +327,16 @@ function render() {
     if (stockFilter === "out-of-stock") {
         filtered = filtered.filter(p => p.soldOut);
     }
+// PRICE SORTING
+const sortValue = document.getElementById("sortSelect").value;
 
+if (sortValue === "priceLow") {
+    filtered.sort((a, b) => a.price - b.price);
+}
+
+if (sortValue === "priceHigh") {
+    filtered.sort((a, b) => b.price - a.price);
+}
     container.innerHTML = filtered.map((p) => `
         <div class="product">
 
