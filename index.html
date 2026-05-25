@@ -172,7 +172,7 @@
         <button class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
     </div>
 </div>
-
+<div class="container" id="productContainer"></div>
 <div class="trust-marquee">
     <div class="marquee-content">
         <span>🛡️ 100% Authentic Pokémon Cards Guaranteed</span>
@@ -294,6 +294,8 @@ function toggleCart() {
 function removeFromCart(i) { cart.splice(i, 1); document.getElementById("cartCount").innerText = cart.length; toggleCart(); toggleCart(); }
 function closeModal() { document.getElementById("productModal").style.display = "none"; document.body.style.overflow = "auto"; }
 function changeCategory(cat) { currentCategory = cat; render(); }
+    let currentCategory = "all";
+let cart = [];
 function handleZoom(e) {
     const box = e.currentTarget;
     const img = box.querySelector('img');
@@ -304,14 +306,65 @@ function handleZoom(e) {
     img.style.transform = "scale(2.5)";
 }
 function resetZoom(e) { e.currentTarget.querySelector('img').style.transform = "scale(1)"; }
+function render() {
 
+    const container = document.getElementById("productContainer");
+
+    let filtered = [...products];
+
+    // CATEGORY FILTER
+    if (currentCategory !== "all") {
+        filtered = filtered.filter(p => p.category === currentCategory);
+    }
+
+    // STOCK FILTER
+    const stockFilter = document.getElementById("stockFilter").value;
+
+    if (stockFilter === "in-stock") {
+        filtered = filtered.filter(p => !p.soldOut);
+    }
+
+    if (stockFilter === "out-of-stock") {
+        filtered = filtered.filter(p => p.soldOut);
+    }
+
+    container.innerHTML = filtered.map((p) => `
+        <div class="product">
+
+            <div class="img-container">
+
+                <img src="${p.images[0]}" onclick="openProduct(${products.indexOf(p)})">
+
+                ${p.soldOut ? `
+                <div class="sold-overlay">
+                    <div class="sold-banner">SOLD OUT</div>
+                </div>
+                ` : ""}
+
+            </div>
+
+            <h3>${p.name}</h3>
+
+            <div class="price-tag">₹${p.price}</div>
+
+            ${
+                p.soldOut
+                ? `<button class="buy" disabled style="opacity:0.5;">Out of Stock</button>`
+                : `<button class="buy" onclick="addToCart(${products.indexOf(p)})">Add to Cart</button>`
+            }
+
+        </div>
+    `).join("");
+}
 function checkout() {
     if(cart.length === 0) return;
     const sub = cart.reduce((a, b) => a + b.price, 0);
     const msg = `Hi PokeIndia, I want to order:\n${cart.map(i => `- ${i.name}`).join("\n")}\n\nPrepaid Total: ₹${sub+150}\nCOD Total: ₹${sub+250}\n\nPlease share payment details!`;
     window.open("https://wa.me/7976132992?text=" + encodeURIComponent(msg));
 }
-
+function applyFilters() {
+    render();
+}
 render();
 </script>
 </body>
