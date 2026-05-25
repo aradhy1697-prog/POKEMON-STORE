@@ -137,19 +137,29 @@
 
 <div class="header"><h1>PokeIndia TCG</h1></div>
 
-<div class="nav-buttons">
-    <button onclick="changeCategory('all')">ALL</button>
-    <button onclick="changeCategory('booster')">BOOSTER BOXES</button>
-    <button onclick="changeCategory('packs')">LOOSE PACKS</button>
-    <button onclick="changeCategory('cards')">SINGLE CARDS</button>
-</div>
-
-<div class="container" id="productList">Loading inventory...</div>
-
-<div id="productModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div id="modalBody" style="display: flex; flex-wrap: wrap; gap: 30px;"></div>
+<div class="nav-buttons" style="display: flex; flex-direction: column; gap: 15px; align-items: center; margin-bottom: 40px;">
+    <div>
+        <button onclick="changeCategory('all')">ALL</button>
+        <button onclick="changeCategory('booster')">BOOSTER BOXES</button>
+        <button onclick="changeCategory('packs')">LOOSE PACKS</button>
+        <button onclick="changeCategory('cards')">SINGLE CARDS</button>
+    </div>
+    
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <select id="sortSelect" onchange="applyFilters()" style="padding: 8px; background: #111; color: white; border: 1px solid var(--neon-btn);">
+            <option value="default">Sort: Default</option>
+            <option value="priceLow">Price: Low to High</option>
+            <option value="priceHigh">Price: High to Low</option>
+        </select>
+        <select id="eraFilter" onchange="applyFilters()" style="padding: 8px; background: #111; color: white; border: 1px solid var(--neon-btn);">
+            <option value="all">Era: All</option>
+            <option value="modern">Modern</option>
+            <option value="vintage">Vintage</option>
+        </select>
+        <select id="stockFilter" onchange="applyFilters()" style="padding: 8px; background: #111; color: white; border: 1px solid var(--neon-btn);">
+            <option value="all">Status: All</option>
+            <option value="in-stock">In-Stock Only</option>
+        </select>
     </div>
 </div>
 
