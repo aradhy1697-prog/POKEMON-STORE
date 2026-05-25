@@ -327,7 +327,13 @@ function openProduct(index) {
         </div>
         <div style="flex:1; min-width:300px;">
             <h2 style="font-family:'Orbitron'">${p.name}</h2>
-            <div class="price-tag" style="font-size:3rem">₹${p.price}</div>
+            <div class="price-tag" style="font-size:3rem">
+    ₹${p.price}
+</div>
+
+${p.ripPrice ? `<div style="color:#39ff14;font-family:'Orbitron';margin-top:10px;">
+    RIP Price: ₹${p.ripPrice}
+</div>` : ""}
             <button class="buy" style="height:60px; background:var(--neon-btn); color:black;" onclick="addToCart(${index}); closeModal()">Reserve Item</button>
         </div>`;
     document.getElementById("productModal").style.display = "block";
