@@ -330,15 +330,15 @@ function openProduct(index) {
     onmouseleave="resetZoom(event)">
                 <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
 
-                ${(p.fullImages && Array.isArray(p.fullImages) && p.fullImages.length > 1) ? `
-                    <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
-                        ${p.fullImages.map(img => `
-                            <img src="${img}"
-                                onclick="document.getElementById('zoomImg').src='${img}'"
-                                style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
-                        `).join('')}
-                    </div>
-                ` : ""}
+                ${Array.isArray(p.fullImages) && p.fullImages.length > 0 ? `
+    <div style="margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        ${p.fullImages.map(img => `
+            <img src="${img}"
+                onclick="document.getElementById('zoomImg').src='${img}'"
+                style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
+        `).join('')}
+    </div>
+` : ""}
             </div>
         </div>
 
