@@ -341,7 +341,9 @@ console.log("IMAGE COUNT:", p.fullImages ? p.fullImages.length : 0);
                 <div style="margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
                     ${images.map(img => `
                         <img src="${img}"
-                            onclick="document.getElementById('zoomImg').src='${img}'"
+    onclick="document.getElementById('zoomImg').src='${img}'"
+    onmouseenter="window.disableZoom = true"
+    onmouseleave="window.disableZoom = false"
                             style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
                     `).join("")}
                 </div>
