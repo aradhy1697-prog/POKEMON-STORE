@@ -323,7 +323,7 @@ function openProduct(index) {
 
     const body = document.getElementById("modalBody");
 
-    const images = Array.isArray(p.fullImages) ? p.fullImages : [];
+    const images = p.fullImages || [];
 
     body.innerHTML = `
 <div style="display:flex; gap:20px; flex-wrap:wrap;">
