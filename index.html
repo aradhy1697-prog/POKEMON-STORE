@@ -316,7 +316,7 @@ const products = [
     { name: "Genesect EX Plasma Blast Holo", price: 2200, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg"], maxQty: 1 }
 ];
 
-function openProduct(index) {
+function openProduct(index) { console.log(p.fullImages);
     const p = products[index];
     const body = document.getElementById("modalBody");
     body.innerHTML = `
