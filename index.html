@@ -316,35 +316,51 @@ const products = [
     { name: "Genesect EX Plasma Blast Holo", price: 2200, category: "cards", condition: "NM", images: ["images/gensectholo1.jpg"], maxQty: 1 }
 ];
 
-function openProduct(index) { console.log(p.fullImages);
+function openProduct(index) {
     const p = products[index];
+
+    console.log(p.fullImages);
+
     const body = document.getElementById("modalBody");
+
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
-           <div class="zoom-box">
-    <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
+            <div class="zoom-box">
+                <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
 
-    ${p.fullImages && p.fullImages.length > 1 ? `
-        <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
-            ${p.fullImages.map(img => `
-                onclick="document.getElementById('zoomImg').src='${img}'"
-                style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
-            `).join('')}
+                ${p.fullImages && p.fullImages.length > 0 ? `
+                    <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+                        ${p.fullImages.map(img => `
+                            <img src="${img}"
+                                onclick="document.getElementById('zoomImg').src='${img}'"
+                                style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
+                        `).join('')}
+                    </div>
+                ` : ""}
+            </div>
         </div>
-    ` : ""}
-</div>
-        </div>
+
         <div style="flex:1; min-width:300px;">
             <h2 style="font-family:'Orbitron'">${p.name}</h2>
-            <div class="price-tag" style="font-size:3rem">
-    ₹${p.price}
-</div>
 
-${p.ripPrice ? `<div style="color:#39ff14;font-family:'Orbitron';margin-top:10px;">
-    RIP Price: ₹${p.ripPrice}
-</div>` : ""}
-            <button class="buy" style="height:60px; background:var(--neon-btn); color:black;" onclick="addToCart(${index}); closeModal()">Reserve Item</button>
-        </div>`;
+            <div class="price-tag" style="font-size:3rem">
+                ₹${p.price}
+            </div>
+
+            ${p.ripPrice ? `
+                <div style="color:#39ff14;font-family:'Orbitron';margin-top:10px;">
+                    RIP Price: ₹${p.ripPrice}
+                </div>
+            ` : ""}
+
+            <button class="buy"
+                style="height:60px; background:var(--neon-btn); color:black;"
+                onclick="addToCart(${index}); closeModal()">
+                Reserve Item
+            </button>
+        </div>
+    `;
+
     document.getElementById("productModal").style.display = "block";
     document.body.style.overflow = "hidden";
 }
