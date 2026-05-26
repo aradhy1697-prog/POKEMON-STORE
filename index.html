@@ -320,7 +320,8 @@ function openProduct(index) {
     const p = products[index];
 
     console.log("OPENED PRODUCT:", p);
-
+console.log("FULL IMAGES:", p.fullImages);
+console.log("IMAGE COUNT:", p.fullImages ? p.fullImages.length : 0);
     const body = document.getElementById("modalBody");
 
     const images = p.fullImages || [];
