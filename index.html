@@ -328,7 +328,7 @@ function openProduct(index) {
             <div class="zoom-box">
                 <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
 
-                ${p.fullImages && p.fullImages.length > 0 ? `
+                ${(p.fullImages && Array.isArray(p.fullImages) && p.fullImages.length > 1) ? `
                     <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
                         ${p.fullImages.map(img => `
                             <img src="${img}"
