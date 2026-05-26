@@ -415,7 +415,7 @@ function resetZoom(e) { e.currentTarget.querySelector('img').style.transform = "
 function render() {
 
     const container = document.getElementById("productContainer");
-
+console.log("RENDER PRODUCTS:", products);
     let filtered = [...products];
 
     // CATEGORY FILTER
