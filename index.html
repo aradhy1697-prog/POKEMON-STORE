@@ -565,8 +565,19 @@ if (sortValue === "priceHigh") {
 
             </div>
 
-            <h3>${p.name}</h3>
+            ${p.condition ? `
+    <div class="badge ${
+        p.condition === 'NM' || p.condition === 'NM-' ? 'nm-plain' :
+        p.condition === 'LP' || p.condition === 'LP-' ? 'lp-badge' :
+        p.condition === 'MP' ? 'mp-badge' :
+        p.condition === 'HP' ? 'hp-badge' :
+        'nm-plain'
+    }">
+        ${p.condition}
+    </div>
+` : ""}
 
+<h3>${p.name}</h3>
             <div class="price-tag">₹${p.price}</div>
 
             ${
