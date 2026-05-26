@@ -413,7 +413,7 @@ function closeModal() { document.getElementById("productModal").style.display = 
 function changeCategory(cat) { currentCategory = cat; render(); }
     let currentCategory = "all";
 let cart = [];
-function handleZoom(e) {
+function handleZoom(e) { if (window.disableZoom) return;
     const box = e.currentTarget;
     const img = box.querySelector('img');
     const rect = box.getBoundingClientRect();
