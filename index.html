@@ -325,7 +325,9 @@ function openProduct(index) {
 
     body.innerHTML = `
         <div style="flex:1; min-width:300px;">
-            <div class="zoom-box">
+            <div class="zoom-box"
+    onmousemove="handleZoom(event)"
+    onmouseleave="resetZoom(event)">
                 <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
 
                 ${(p.fullImages && Array.isArray(p.fullImages) && p.fullImages.length > 1) ? `
