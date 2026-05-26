@@ -327,7 +327,7 @@ function openProduct(index) { console.log(p.fullImages);
     ${p.fullImages && p.fullImages.length > 1 ? `
         <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
             ${p.fullImages.map(img => `
-                <img src="${img}" onclick="document.getElementById('zoomImg').src='${img}'"
+                onclick="setMainImage('${img}')"
                 style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
             `).join('')}
         </div>
@@ -376,7 +376,12 @@ function toggleCart() {
     }
     modal.style.display = modal.style.display === "block" ? "none" : "block";
 }
-
+function setMainImage(img) {
+    const el = document.getElementById("zoomImg");
+    if (el) {
+        el.src = img;
+    }
+}
 function removeFromCart(i) { cart.splice(i, 1); document.getElementById("cartCount").innerText = cart.length; toggleCart(); toggleCart(); }
 function closeModal() { document.getElementById("productModal").style.display = "none"; document.body.style.overflow = "auto"; }
 function changeCategory(cat) { currentCategory = cat; render(); }
