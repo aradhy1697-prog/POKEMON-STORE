@@ -323,6 +323,8 @@ function openProduct(index) {
 
     const body = document.getElementById("modalBody");
 
+    const images = Array.isArray(p.fullImages) ? p.fullImages : [];
+
     body.innerHTML = `
 <div style="display:flex; gap:20px; flex-wrap:wrap;">
 
@@ -332,15 +334,15 @@ function openProduct(index) {
             onmousemove="handleZoom(event)"
             onmouseleave="resetZoom(event)">
 
-            <img src="${(p.fullImages && p.fullImages[0]) || p.thumbnail || p.images[0]}" id="zoomImg">
+            <img src="${images[0] || p.thumbnail || (p.images && p.images[0])}" id="zoomImg">
 
-           ${p.fullImages.map(img => {
-    return `
-        <img src="${img}"
-            onclick="document.getElementById('zoomImg').src='${img}'"
-            style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
-    `;
-}).join('')}
+            ${Array.isArray(images) && images.length > 1 ? `
+                <div style="margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                    ${images.map(img => `
+                        <img src="${img}"
+                            onclick="document.getElementById('zoomImg').src='${img}'"
+                            style="width:60px;height:60px;object-fit:cover;border:1px solid #fff;cursor:pointer;border-radius:6px;">
+                    `).join("")}
                 </div>
             ` : ""}
 
